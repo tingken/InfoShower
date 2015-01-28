@@ -35,17 +35,12 @@
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
             style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="center|center_horizontal"
             android:background="@color/black_overlay"
             android:orientation="horizontal"
             tools:ignore="UselessParent" >
-        </LinearLayout>
-
-        <GridLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
             <TextView
                 android:id="@+id/dummy_button"
 		            android:layout_width="wrap_content"
@@ -53,7 +48,13 @@
 		            android:text="@string/welcome_word"
 		            android:textColor="#ffffff"
 		            android:textSize="20sp" />
-        </GridLayout>
+        </LinearLayout>
+
+        <!-- <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" >
+        </RelativeLayout> -->
 
     </FrameLayout>
 
