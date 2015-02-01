@@ -1,5 +1,8 @@
-package com.tingken.infoshower;
+package com.tingken.infoshower.view;
 
+import com.tingken.infoshower.R;
+import com.tingken.infoshower.R.id;
+import com.tingken.infoshower.R.layout;
 import com.tingken.infoshower.util.SystemUiHider;
 
 import android.annotation.TargetApi;

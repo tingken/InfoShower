@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         <activity
-            android:name=".WelcomActivity"
+            android:name="com.tingken.infoshower.view.WelcomActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
@@ -25,13 +25,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:name="com.tingken.infoshower.view.LoginActivity"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
+        <activity
+            android:name="com.tingken.infoshower.view.LoginSucessActivity"
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name=".LoginSucessActivity"
-            android:screenOrientation="landscape" >
+            android:name="com.tingken.infoshower.view.LoginFailActivity"
+            android:label="@string/title_activity_login_fail" >
+        </activity>
+        <activity
+            android:name="com.tingken.infoshower.view.LoginInvalidActivity"
+            android:label="@string/title_activity_login_invalid" >
         </activity>
     </application>
 

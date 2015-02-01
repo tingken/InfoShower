@@ -10,5 +10,8 @@
     <string name="prompt_regnum">注册码</string>
     <string name="ok">确认</string>
     <string name="cancel">取消</string>
+    <string name="title_activity_login_fail">LoginFailActivity</string>
+    <string name="title_activity_login_invalid">LoginInvalidActivity</string>
+    <string name="exit">退出</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.tingken.infoshower;
+package com.tingken.infoshower.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -28,6 +28,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.tingken.infoshower.R;
+import com.tingken.infoshower.R.id;
+import com.tingken.infoshower.R.layout;
+import com.tingken.infoshower.R.string;
 
 /**
  * A login screen that offers login via email/password.
