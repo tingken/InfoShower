@@ -3,15 +3,17 @@ package com.tingken.infoshower.view;
 import com.tingken.infoshower.R;
 import com.tingken.infoshower.R.id;
 import com.tingken.infoshower.R.layout;
-import com.tingken.infoshower.util.SystemUiHider;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.tingken.infoshower.UpgradeNoticeActivity;
+import com.tingken.infoshower.util.SystemUiHider;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -161,5 +163,28 @@ public class WelcomActivity extends Activity {
 	private void delayedHide(int delayMillis) {
 		mHideHandler.removeCallbacks(mHideRunnable);
 		mHideHandler.postDelayed(mHideRunnable, delayMillis);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// handle the key from controller
+		switch (keyCode) {
+		case KeyEvent.KEYCODE_NUMPAD_0:
+			//
+			break;
+		case KeyEvent.KEYCODE_BACK:
+			break;
+		case KeyEvent.KEYCODE_DPAD_CENTER:
+			// open menu
+			// Intent intent = new Intent(WelcomActivity.this,
+			// RestartAlertActivity.class);
+			// startActivity(intent);
+			UpgradeNoticeActivity dialog = new UpgradeNoticeActivity(this);
+			dialog.show();
+			break;
+		default:
+			break;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 }
