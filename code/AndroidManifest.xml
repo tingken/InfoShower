@@ -49,6 +49,10 @@
             android:name=".UpgradeNoticeActivity"
             android:label="@string/title_activity_upgrade_notice" >
         </activity>
+        <activity
+            android:name="com.tingken.infoshower.view.MainActivity"
+            android:label="@string/title_activity_main" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.READ_PROFILE" />

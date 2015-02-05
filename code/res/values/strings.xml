@@ -17,5 +17,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_upgrade_notice">UpgradeNoticeActivity</string>
     <string name="current_version_info">(当前版本1.0）</string>
+    <string name="title_activity_main">MainActivity</string>
 
 </resources>
