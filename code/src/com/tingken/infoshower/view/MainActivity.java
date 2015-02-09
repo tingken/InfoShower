@@ -6,12 +6,15 @@ import java.util.TimerTask;
 import com.tingken.infoshower.R;
 import com.tingken.infoshower.R.layout;
 import com.tingken.infoshower.core.DataSource;
+import com.tingken.infoshower.core.test.MockDataSource;
 import com.tingken.infoshower.outside.ServerCommand;
 import com.tingken.infoshower.outside.ShowService;
+import com.tingken.infoshower.outside.test.MockShowServiceImpl;
 
 import android.app.Activity;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,9 +26,10 @@ public class MainActivity extends Activity {
 
 	private WebView webContent;
 	private Timer serverListener;
-	private ShowService showService;
-	private DataSource dataSource;
+	private ShowService showService = new MockShowServiceImpl();
+	private DataSource dataSource = new MockDataSource();
 	private boolean connectionNoticeOpened;
+	private PopupWindow connectionFailedNotice;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +75,11 @@ public class MainActivity extends Activity {
 						// notice connection failed and save status
 						networkAccessable = false;
 						openConnectionNote();
-						connectionNoticeOpened = true;
 						break;
 					}
 					if (networkAccessable && connectionNoticeOpened) {
 						// close
+						closeConnectionNote();
 					}
 				}
 
@@ -90,11 +94,20 @@ public class MainActivity extends Activity {
 		LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 		// 引入窗口配置文件
 		View view = inflater.inflate(R.layout.connection_failed_notice, null);
-		// 创建PopupWindow对象
-		final PopupWindow pop = new PopupWindow(view);
-		pop.showAtLocation(inflater.inflate(R.layout.activity_main, null), 0,
-				0, 0);
+		connectionFailedNotice = new PopupWindow(view);
+		connectionFailedNotice.showAtLocation(
+				inflater.inflate(R.layout.activity_main, null),
+				Gravity.NO_GRAVITY, 0, 0);
 
+		connectionNoticeOpened = true;
+	}
+
+	protected void closeConnectionNote() {
+		if (connectionFailedNotice != null) {
+			connectionFailedNotice.dismiss();
+			connectionFailedNotice = null;
+			connectionNoticeOpened = false;
+		}
 	}
 
 	@Override

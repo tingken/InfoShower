@@ -2,14 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    android:background="@drawable/welcome_bg"
     tools:context="com.tingken.infoshower.view.WelcomActivity" >
-
-    <!--
-         The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
-         TextureView, etc.
-    -->
 
     <TextView
         android:id="@+id/fullscreen_content"
@@ -21,11 +15,6 @@
         android:textColor="#33b5e5"
         android:textSize="50sp"
         android:textStyle="bold" />
-
-    <!--
-         This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows.
-    -->
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -39,23 +28,26 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|center_horizontal"
             android:background="@color/black_overlay"
-            android:orientation="horizontal"
+            android:gravity="center"
+            android:orientation="vertical"
             tools:ignore="UselessParent" >
+
             <TextView
                 android:id="@+id/dummy_button"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:text="@string/welcome_word"
-		            android:textColor="#ffffff"
-		            android:textSize="20sp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="75dp"
+                android:text="@string/welcome_word"
+                android:textColor="#ffffff"
+                android:textSize="42sp" />
+
+            <ProgressBar
+                android:id="@+id/progressBar1"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="75dp" />
         </LinearLayout>
-
-        <!-- <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" >
-        </RelativeLayout> -->
-
     </FrameLayout>
 
 </FrameLayout>

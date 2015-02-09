@@ -33,6 +33,11 @@ import com.tingken.infoshower.R;
 import com.tingken.infoshower.R.id;
 import com.tingken.infoshower.R.layout;
 import com.tingken.infoshower.R.string;
+import com.tingken.infoshower.core.DataSource;
+import com.tingken.infoshower.core.test.MockDataSource;
+import com.tingken.infoshower.outside.AuthResult;
+import com.tingken.infoshower.outside.ShowService;
+import com.tingken.infoshower.outside.test.MockShowServiceImpl;
 
 /**
  * A login screen that offers login via email/password.
@@ -51,9 +56,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	private UserLoginTask mAuthTask = null;
 
 	// UI references.
-	private EditText mPasswordView;
+	private EditText mAuthcodeView;
 	private View mProgressView;
 	private View mLoginFormView;
+
+	private ShowService showService = new MockShowServiceImpl();
+	private DataSource dataSource = new MockDataSource();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +70,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 		setContentView(R.layout.activity_login);
 
 		// Set up the login form.
-		mPasswordView = (EditText) findViewById(R.id.regnum);
-		mPasswordView
+		mAuthcodeView = (EditText) findViewById(R.id.regnum);
+		mAuthcodeView
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 					@Override
 					public boolean onEditorAction(TextView textView, int id,
@@ -99,29 +107,29 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 		}
 
 		// Reset errors.
-		mPasswordView.setError(null);
+		mAuthcodeView.setError(null);
 
 		// Store values at the time of the login attempt.
-		String password = mPasswordView.getText().toString();
+		String password = mAuthcodeView.getText().toString();
 
 		boolean cancel = false;
 		View focusView = null;
 
 		// Check for a valid password, if the user entered one.
 		if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-			mPasswordView.setError(getString(R.string.error_invalid_password));
-			focusView = mPasswordView;
+			mAuthcodeView.setError(getString(R.string.error_invalid_password));
+			focusView = mAuthcodeView;
 			cancel = true;
 		}
 
 		// Check for a valid email address.
 		if (TextUtils.isEmpty(password)) {
-			mPasswordView.setError(getString(R.string.error_field_required));
-			focusView = mPasswordView;
+			mAuthcodeView.setError(getString(R.string.error_field_required));
+			focusView = mAuthcodeView;
 			cancel = true;
 		} else if (!isEmailValid(password)) {
-			mPasswordView.setError(getString(R.string.error_invalid_email));
-			focusView = mPasswordView;
+			mAuthcodeView.setError(getString(R.string.error_invalid_email));
+			focusView = mAuthcodeView;
 			cancel = true;
 		}
 
@@ -235,28 +243,39 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-		private final String mPassword;
+		private final String mAuthCode;
 
-		UserLoginTask(String password) {
-			mPassword = password;
+		UserLoginTask(String authCode) {
+			mAuthCode = authCode;
 		}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			// TODO: attempt authentication against a network service.
 
+			AuthResult authResult = null;
 			try {
 				// Simulate network access.
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
+				authResult = showService.authenticate(mAuthCode,
+						dataSource.getResolution());
+			} catch (Exception e) {
+				// network exception, go to Login Invalid Page
 				return false;
+			}
+
+			if (authResult != null) {
+				if (authResult.isAuthSuccess()) {
+					// go to Login Success Page
+				} else {
+					// go to Login Fail Page
+				}
 			}
 
 			for (String credential : DUMMY_CREDENTIALS) {
 				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mPassword)) {
+				if (pieces[0].equals(mAuthCode)) {
 					// Account exists, return true if the password matches.
-					return pieces[1].equals(mPassword);
+					return pieces[1].equals(mAuthCode);
 				}
 			}
 
@@ -272,9 +291,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			if (success) {
 				finish();
 			} else {
-				mPasswordView
+				mAuthcodeView
 						.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
+				mAuthcodeView.requestFocus();
 			}
 		}
 

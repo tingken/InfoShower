@@ -5,6 +5,7 @@ import com.tingken.infoshower.R.id;
 import com.tingken.infoshower.R.layout;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.tingken.infoshower.UpgradeNoticeActivity;
+import com.tingken.infoshower.core.DataSource;
+import com.tingken.infoshower.core.test.MockDataSource;
 import com.tingken.infoshower.util.SystemUiHider;
 
 /**
@@ -49,6 +52,8 @@ public class WelcomActivity extends Activity {
 	 * The instance of the {@link SystemUiHider} for this activity.
 	 */
 	private SystemUiHider mSystemUiHider;
+
+	private DataSource dataSource = new MockDataSource();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +126,24 @@ public class WelcomActivity extends Activity {
 		// while interacting with the UI.
 		findViewById(R.id.dummy_button).setOnTouchListener(
 				mDelayHideTouchListener);
+	}
+
+	@Override
+	protected void onStart() {
+		if (dataSource.getCachedServerAddress() != null) {
+			// go to main page
+			Intent intent = new Intent(WelcomActivity.this, MainActivity.class);
+			intent.putExtra("content_page_address",
+					dataSource.getCachedServerAddress());
+			startActivity(intent);
+		} else {
+			// go to Login page
+			Intent intent = new Intent(WelcomActivity.this, LoginActivity.class);
+			// intent.putExtra("content_page_address",
+			// dataSource.getCachedServerAddress());
+			startActivity(intent);
+		}
+		super.onStart();
 	}
 
 	@Override

@@ -11,4 +11,8 @@ public interface DataSource {
 	String getAuthCode();
 
 	String getResolution();
+
+	String getCachedServerAddress();
+
+	String getOfflineServerPage();
 }
