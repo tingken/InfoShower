@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -260,14 +261,21 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 						dataSource.getResolution());
 			} catch (Exception e) {
 				// network exception, go to Login Invalid Page
+				Intent intent = new Intent(LoginActivity.this, LoginInvalidActivity.class);
+				startActivity(intent);
 				return false;
 			}
 
 			if (authResult != null) {
 				if (authResult.isAuthSuccess()) {
+					// save server address
 					// go to Login Success Page
+					Intent intent = new Intent(LoginActivity.this, LoginSuccessActivity.class);
+					startActivity(intent);
 				} else {
 					// go to Login Fail Page
+					Intent intent = new Intent(LoginActivity.this, LoginFailActivity.class);
+					startActivity(intent);
 				}
 			}
 

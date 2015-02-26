@@ -16,6 +16,9 @@ import android.view.View;
 import com.tingken.infoshower.UpgradeNoticeActivity;
 import com.tingken.infoshower.core.DataSource;
 import com.tingken.infoshower.core.test.MockDataSource;
+import com.tingken.infoshower.outside.AuthResult;
+import com.tingken.infoshower.outside.ShowService;
+import com.tingken.infoshower.outside.test.MockShowServiceImpl;
 import com.tingken.infoshower.util.SystemUiHider;
 
 /**
@@ -54,6 +57,7 @@ public class WelcomActivity extends Activity {
 	private SystemUiHider mSystemUiHider;
 
 	private DataSource dataSource = new MockDataSource();
+	private ShowService showService = new MockShowServiceImpl();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -130,19 +134,6 @@ public class WelcomActivity extends Activity {
 
 	@Override
 	protected void onStart() {
-		if (dataSource.getCachedServerAddress() != null) {
-			// go to main page
-			Intent intent = new Intent(WelcomActivity.this, MainActivity.class);
-			intent.putExtra("content_page_address",
-					dataSource.getCachedServerAddress());
-			startActivity(intent);
-		} else {
-			// go to Login page
-			Intent intent = new Intent(WelcomActivity.this, LoginActivity.class);
-			// intent.putExtra("content_page_address",
-			// dataSource.getCachedServerAddress());
-			startActivity(intent);
-		}
 		super.onStart();
 	}
 
@@ -175,6 +166,28 @@ public class WelcomActivity extends Activity {
 	Runnable mHideRunnable = new Runnable() {
 		@Override
 		public void run() {
+			// check login status
+			if (dataSource.getAuthCode() != null) {
+				// try to login background
+				AuthResult authResult = showService.authenticate(dataSource.getAuthCode(), dataSource.getResolution());
+				if(authResult.isAuthSuccess()){
+				// go to main page
+				Intent intent = new Intent(WelcomActivity.this, MainActivity.class);
+				intent.putExtra("content_page_address",
+						dataSource.getCachedServerAddress());
+				startActivity(intent);
+				}else{
+					// go to Login page
+					Intent intent = new Intent(WelcomActivity.this, LoginActivity.class);
+					startActivity(intent);
+				}
+			} else {
+				// go to Login page
+				Intent intent = new Intent(WelcomActivity.this, LoginActivity.class);
+				// intent.putExtra("content_page_address",
+				// dataSource.getCachedServerAddress());
+				startActivity(intent);
+			}
 			mSystemUiHider.hide();
 		}
 	};
