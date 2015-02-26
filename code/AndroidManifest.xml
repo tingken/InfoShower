@@ -17,6 +17,7 @@
             android:name=".view.WelcomActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
+            android:screenOrientation="landscape"
             android:theme="@style/FullscreenTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,20 +36,22 @@
         </activity>
         <activity
             android:name=".view.LoginFailActivity"
-            android:label="@string/title_activity_login_fail" >
+            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name=".view.LoginInvalidActivity"
-            android:label="@string/title_activity_login_invalid" >
+            android:screenOrientation="landscape" >
         </activity>
         <activity
             android:name=".view.RestartAlertActivity"
             android:label="@string/title_activity_restart_alert" >
         </activity>
+        <!--
         <activity
             android:name=".UpgradeNoticeActivity"
-            android:label="@string/title_activity_upgrade_notice" >
+            android:screenOrientation="landscape" >
         </activity>
+        -->
         <activity
             android:name="com.tingken.infoshower.view.MainActivity"
             android:label="@string/title_activity_main" >

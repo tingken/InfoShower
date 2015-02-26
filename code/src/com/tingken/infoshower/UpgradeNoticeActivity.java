@@ -15,6 +15,11 @@ public class UpgradeNoticeActivity extends Dialog {
 		// TODO Auto-generated constructor stub
 	}
 
+	public UpgradeNoticeActivity(Context context, int theme) {
+		super(context, theme);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

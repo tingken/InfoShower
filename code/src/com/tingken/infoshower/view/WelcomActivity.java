@@ -12,6 +12,8 @@ import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.tingken.infoshower.UpgradeNoticeActivity;
 import com.tingken.infoshower.core.DataSource;
@@ -61,6 +63,9 @@ public class WelcomActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		// remove title
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_welcom);
@@ -70,48 +75,41 @@ public class WelcomActivity extends Activity {
 
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
-		mSystemUiHider = SystemUiHider.getInstance(this, contentView,
-				HIDER_FLAGS);
+		mSystemUiHider = SystemUiHider.getInstance(this, contentView, HIDER_FLAGS);
 		mSystemUiHider.setup();
-		mSystemUiHider
-				.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
-					// Cached values.
-					int mControlsHeight;
-					int mShortAnimTime;
+		mSystemUiHider.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener() {
+			// Cached values.
+			int mControlsHeight;
+			int mShortAnimTime;
 
-					@Override
-					@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-					public void onVisibilityChange(boolean visible) {
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-							// If the ViewPropertyAnimator API is available
-							// (Honeycomb MR2 and later), use it to animate the
-							// in-layout UI controls at the bottom of the
-							// screen.
-							if (mControlsHeight == 0) {
-								mControlsHeight = controlsView.getHeight();
-							}
-							if (mShortAnimTime == 0) {
-								mShortAnimTime = getResources().getInteger(
-										android.R.integer.config_shortAnimTime);
-							}
-							controlsView
-									.animate()
-									.translationY(visible ? 0 : mControlsHeight)
-									.setDuration(mShortAnimTime);
-						} else {
-							// If the ViewPropertyAnimator APIs aren't
-							// available, simply show or hide the in-layout UI
-							// controls.
-							controlsView.setVisibility(visible ? View.VISIBLE
-									: View.GONE);
-						}
-
-						if (visible && AUTO_HIDE) {
-							// Schedule a hide().
-							delayedHide(AUTO_HIDE_DELAY_MILLIS);
-						}
+			@Override
+			@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+			public void onVisibilityChange(boolean visible) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+					// If the ViewPropertyAnimator API is available
+					// (Honeycomb MR2 and later), use it to animate the
+					// in-layout UI controls at the bottom of the
+					// screen.
+					if (mControlsHeight == 0) {
+						mControlsHeight = controlsView.getHeight();
 					}
-				});
+					if (mShortAnimTime == 0) {
+						mShortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+					}
+					controlsView.animate().translationY(visible ? 0 : mControlsHeight).setDuration(mShortAnimTime);
+				} else {
+					// If the ViewPropertyAnimator APIs aren't
+					// available, simply show or hide the in-layout UI
+					// controls.
+					controlsView.setVisibility(visible ? View.VISIBLE : View.GONE);
+				}
+
+				if (visible && AUTO_HIDE) {
+					// Schedule a hide().
+					delayedHide(AUTO_HIDE_DELAY_MILLIS);
+				}
+			}
+		});
 
 		// Set up the user interaction to manually show or hide the system UI.
 		contentView.setOnClickListener(new View.OnClickListener() {
@@ -128,8 +126,7 @@ public class WelcomActivity extends Activity {
 		// Upon interacting with UI controls, delay any scheduled hide()
 		// operations to prevent the jarring behavior of controls going away
 		// while interacting with the UI.
-		findViewById(R.id.dummy_button).setOnTouchListener(
-				mDelayHideTouchListener);
+		findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 	}
 
 	@Override
@@ -144,7 +141,7 @@ public class WelcomActivity extends Activity {
 		// Trigger the initial hide() shortly after the activity has been
 		// created, to briefly hint to the user that UI controls
 		// are available.
-		delayedHide(100);
+		// delayedHide(100);
 	}
 
 	/**
@@ -170,13 +167,12 @@ public class WelcomActivity extends Activity {
 			if (dataSource.getAuthCode() != null) {
 				// try to login background
 				AuthResult authResult = showService.authenticate(dataSource.getAuthCode(), dataSource.getResolution());
-				if(authResult.isAuthSuccess()){
-				// go to main page
-				Intent intent = new Intent(WelcomActivity.this, MainActivity.class);
-				intent.putExtra("content_page_address",
-						dataSource.getCachedServerAddress());
-				startActivity(intent);
-				}else{
+				if (authResult.isAuthSuccess()) {
+					// go to main page
+					Intent intent = new Intent(WelcomActivity.this, MainActivity.class);
+					intent.putExtra("content_page_address", dataSource.getCachedServerAddress());
+					startActivity(intent);
+				} else {
 					// go to Login page
 					Intent intent = new Intent(WelcomActivity.this, LoginActivity.class);
 					startActivity(intent);
@@ -215,7 +211,7 @@ public class WelcomActivity extends Activity {
 			// Intent intent = new Intent(WelcomActivity.this,
 			// RestartAlertActivity.class);
 			// startActivity(intent);
-			UpgradeNoticeActivity dialog = new UpgradeNoticeActivity(this);
+			UpgradeNoticeActivity dialog = new UpgradeNoticeActivity(this, R.style.MyDialog);
 			dialog.show();
 			break;
 		default:

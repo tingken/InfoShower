@@ -13,7 +13,7 @@
         android:keepScreenOn="true"
         android:text="@string/dummy_content"
         android:textColor="#33b5e5"
-        android:textSize="50sp"
+        android:textSize="100px"
         android:textStyle="bold" />
 
     <FrameLayout
@@ -36,17 +36,17 @@
                 android:id="@+id/dummy_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="75dp"
+                android:paddingTop="150px"
                 android:text="@string/welcome_word"
                 android:textColor="#ffffff"
-                android:textSize="42sp" />
+                android:textSize="84px" />
 
             <ProgressBar
                 android:id="@+id/progressBar1"
-                style="?android:attr/progressBarStyleSmall"
+                style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="75dp" />
+                android:paddingTop="150px" />
         </LinearLayout>
     </FrameLayout>
 
