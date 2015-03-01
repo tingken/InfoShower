@@ -31,7 +31,7 @@
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         <activity
-            android:name=".view.LoginSucessActivity"
+            android:name=".view.LoginSuccessActivity"
             android:screenOrientation="landscape" >
         </activity>
         <activity
@@ -50,7 +50,7 @@
         <activity
             android:name=".UpgradeNoticeActivity"
             android:screenOrientation="landscape" >
-        </activity>
+        </activity>
         -->
         <activity
             android:name="com.tingken.infoshower.view.MainActivity"

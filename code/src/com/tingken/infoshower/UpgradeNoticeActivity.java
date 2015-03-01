@@ -11,7 +11,7 @@ import android.view.MenuItem;
 public class UpgradeNoticeActivity extends Dialog {
 
 	public UpgradeNoticeActivity(Context context) {
-		super(context);
+		super(context, R.style.MyDialog);
 		// TODO Auto-generated constructor stub
 	}
 

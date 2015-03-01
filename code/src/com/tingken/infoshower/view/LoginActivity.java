@@ -15,6 +15,8 @@ import android.os.AsyncTask;
 import android.os.Build.VERSION;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -35,9 +37,11 @@ import com.tingken.infoshower.R.id;
 import com.tingken.infoshower.R.layout;
 import com.tingken.infoshower.R.string;
 import com.tingken.infoshower.core.DataSource;
+import com.tingken.infoshower.core.DataSourceFactory;
 import com.tingken.infoshower.core.test.MockDataSource;
 import com.tingken.infoshower.outside.AuthResult;
 import com.tingken.infoshower.outside.ShowService;
+import com.tingken.infoshower.outside.ShowServiceFactory;
 import com.tingken.infoshower.outside.test.MockShowServiceImpl;
 
 /**
@@ -49,8 +53,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	 * A dummy authentication store containing known user names and passwords.
 	 * TODO: remove after connecting to a real authentication system.
 	 */
-	private static final String[] DUMMY_CREDENTIALS = new String[] {
-			"foo@example.com:hello", "bar@example.com:world" };
+	private static final String[] DUMMY_CREDENTIALS = new String[] { "foo@example.com:hello", "bar@example.com:world" };
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
@@ -61,8 +64,32 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	private View mProgressView;
 	private View mLoginFormView;
 
-	private ShowService showService = new MockShowServiceImpl();
-	private DataSource dataSource = new MockDataSource();
+	private ShowService showService = ShowServiceFactory.getSystemShowService();
+	private DataSource dataSource = DataSourceFactory.getSystemDataSource();
+
+	private Handler loginHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			Intent intent;
+			switch (msg.what) {
+			case 0:
+				intent = new Intent(LoginActivity.this, LoginSuccessActivity.class);
+				startActivity(intent);
+				break;
+			case 1:
+				intent = new Intent(LoginActivity.this, LoginFailActivity.class);
+				startActivity(intent);
+				break;
+			case 2:
+				intent = new Intent(LoginActivity.this, LoginInvalidActivity.class);
+				startActivity(intent);
+				break;
+			}
+			super.handleMessage(msg);
+		}
+
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,18 +99,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 		// Set up the login form.
 		mAuthcodeView = (EditText) findViewById(R.id.regnum);
-		mAuthcodeView
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView textView, int id,
-							KeyEvent keyEvent) {
-						if (id == R.id.login || id == EditorInfo.IME_NULL) {
-							attemptLogin();
-							return true;
-						}
-						return false;
-					}
-				});
+		mAuthcodeView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+				if (id == R.id.login || id == EditorInfo.IME_NULL) {
+					attemptLogin();
+					return true;
+				}
+				return false;
+			}
+		});
 
 		Button mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
 		mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -166,28 +191,23 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 		// for very easy animations. If available, use these APIs to fade-in
 		// the progress spinner.
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			int shortAnimTime = getResources().getInteger(
-					android.R.integer.config_shortAnimTime);
+			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-			mLoginFormView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 0 : 1)
+			mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							mLoginFormView.setVisibility(show ? View.GONE
-									: View.VISIBLE);
+							mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 						}
 					});
 
 			mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-			mProgressView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 1 : 0)
+			mProgressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
 					.setListener(new AnimatorListenerAdapter() {
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							mProgressView.setVisibility(show ? View.VISIBLE
-									: View.GONE);
+							mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
 						}
 					});
 		} else {
@@ -201,10 +221,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	@Override
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 		return new CursorLoader(this,
-				// Retrieve data rows for the device user's 'profile' contact.
+		// Retrieve data rows for the device user's 'profile' contact.
 				Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-						ContactsContract.Contacts.Data.CONTENT_DIRECTORY),
-				ProfileQuery.PROJECTION,
+						ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
 
 				// Select only email addresses.
 				ContactsContract.Contacts.Data.MIMETYPE + " = ?",
@@ -257,12 +276,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			AuthResult authResult = null;
 			try {
 				// Simulate network access.
-				authResult = showService.authenticate(mAuthCode,
-						dataSource.getResolution());
+				authResult = showService.authenticate(mAuthCode, dataSource.getResolution());
 			} catch (Exception e) {
 				// network exception, go to Login Invalid Page
-				Intent intent = new Intent(LoginActivity.this, LoginInvalidActivity.class);
-				startActivity(intent);
+				loginHandler.sendEmptyMessage(2);
 				return false;
 			}
 
@@ -270,12 +287,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 				if (authResult.isAuthSuccess()) {
 					// save server address
 					// go to Login Success Page
-					Intent intent = new Intent(LoginActivity.this, LoginSuccessActivity.class);
-					startActivity(intent);
+					loginHandler.sendEmptyMessage(0);
 				} else {
 					// go to Login Fail Page
-					Intent intent = new Intent(LoginActivity.this, LoginFailActivity.class);
-					startActivity(intent);
+					loginHandler.sendEmptyMessage(1);
 				}
 			}
 
@@ -299,8 +314,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			if (success) {
 				finish();
 			} else {
-				mAuthcodeView
-						.setError(getString(R.string.error_incorrect_password));
+				mAuthcodeView.setError(getString(R.string.error_incorrect_password));
 				mAuthcodeView.requestFocus();
 			}
 		}
