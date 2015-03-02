@@ -153,10 +153,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			mAuthcodeView.setError(getString(R.string.error_field_required));
 			focusView = mAuthcodeView;
 			cancel = true;
-		} else if (!isEmailValid(password)) {
-			mAuthcodeView.setError(getString(R.string.error_invalid_email));
-			focusView = mAuthcodeView;
-			cancel = true;
+			// } else if (!isEmailValid(password)) {
+			// mAuthcodeView.setError(getString(R.string.error_invalid_email));
+			// focusView = mAuthcodeView;
+			// cancel = true;
 		}
 
 		if (cancel) {

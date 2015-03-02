@@ -1,5 +1,8 @@
 package com.tingken.infoshower.view;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,8 +19,11 @@ import com.tingken.infoshower.outside.test.MockShowServiceImpl;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
@@ -55,6 +62,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		webContent = (WebView) findViewById(R.id.webView1);
+		webContent.setWebViewClient(new WebViewClient());
 		webContent.getSettings().setSupportZoom(true);
 		webContent.getSettings().setJavaScriptEnabled(true);
 		webContent.getSettings().setBuiltInZoomControls(true);
@@ -150,19 +158,20 @@ public class MainActivity extends Activity {
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_NUMPAD_0:
 			//
-			break;
+			savePic(takeScreenShot(MainActivity.this), "sdcard/Download/sc.png");
+			return true;
 		case KeyEvent.KEYCODE_BACK:
 			// close menu if it's open
 			break;
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 			// execute if menu is open
 			if (popMenu != null) {
-
+				return true;
 			} else {
 				// open menu
 				openMenu();
+				return true;
 			}
-			break;
 		case KeyEvent.KEYCODE_DPAD_UP:
 			// move focus if menu is open
 			if (popMenu != null) {
@@ -179,6 +188,7 @@ public class MainActivity extends Activity {
 					break;
 				}
 				moveMenuFocus(focus);
+				return true;
 			}
 			break;
 		case KeyEvent.KEYCODE_DPAD_DOWN:
@@ -197,6 +207,7 @@ public class MainActivity extends Activity {
 					break;
 				}
 				moveMenuFocus(focus);
+				return true;
 			}
 			break;
 		case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -219,11 +230,11 @@ public class MainActivity extends Activity {
 		View view = inflater.inflate(R.layout.menu_setting, null);
 		popMenu = new PopupWindow(view, 320, 410, false);
 		// 需要设置一下此参数，点击外边可消失
-		popMenu.setBackgroundDrawable(new BitmapDrawable());
+		// popMenu.setBackgroundDrawable(new BitmapDrawable());
 		// 设置点击窗口外边窗口消失
-		popMenu.setOutsideTouchable(true);
+		// popMenu.setOutsideTouchable(true);
 		// 设置此参数获得焦点，否则无法点击
-		popMenu.setFocusable(true);
+		// popMenu.setFocusable(true);
 		btnChangeRegnum = (Button) view.findViewById(R.id.btnChangeRegnum);
 		btnChangeRegnum.setOnClickListener(new View.OnClickListener() {
 
@@ -258,7 +269,18 @@ public class MainActivity extends Activity {
 				popMenu = null;
 			}
 		});
+		view.setOnKeyListener(new OnKeyListener() {
+
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				onKeyDown(keyCode, event);
+				return false;
+			}
+
+		});
 		popMenu.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.NO_GRAVITY, 170, 60);
+		focus = MenuFocus.CHANGE_AUTO_START;
+		moveMenuFocus(MenuFocus.CHANGE_AUTO_START);
 	}
 
 	private void closeMenu() {
@@ -291,6 +313,47 @@ public class MainActivity extends Activity {
 			btnChangeAutoStart.setVisibility(View.INVISIBLE);
 			btnExit.setVisibility(View.INVISIBLE);
 			break;
+		}
+	}
+
+	// 获取指定Activity的截屏，保存到png文件
+	private static Bitmap takeScreenShot(Activity activity) {
+		// View是你需要截图的View
+		View view = activity.getWindow().getDecorView();
+		view.setDrawingCacheEnabled(true);
+		view.buildDrawingCache();
+		Bitmap b1 = view.getDrawingCache();
+
+		// 获取状态栏高度
+		Rect frame = new Rect();
+		activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+		int statusBarHeight = frame.top;
+		Log.i("TAG", "" + statusBarHeight);
+
+		// 获取屏幕长和高
+		int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+		int height = activity.getWindowManager().getDefaultDisplay().getHeight();
+		// 去掉标题栏
+		// Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
+		Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, height - statusBarHeight);
+		view.destroyDrawingCache();
+		return b;
+	}
+
+	// 保存到sdcard
+	private static void savePic(Bitmap b, String strFileName) {
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(strFileName);
+			if (null != fos) {
+				b.compress(Bitmap.CompressFormat.PNG, 90, fos);
+				fos.flush();
+				fos.close();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }
