@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|center_horizontal"
-        android:layout_marginTop="146dp"
+        android:layout_marginTop="292px"
         android:orientation="horizontal" >
 
         <Button
@@ -19,17 +19,19 @@
             style="@style/ButtonBarButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:layout_marginLeft="13dp"
-            android:background="@drawable/retry" />
+            android:layout_marginBottom="3px"
+            android:layout_marginLeft="26px"
+            android:background="@drawable/login_btn_selector"
+            android:text="@string/retry" />
 
         <Button
             android:id="@+id/btnExit"
             style="@style/ButtonBarButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="22dp"
-            android:background="@drawable/exit" />
+            android:layout_marginLeft="44px"
+            android:background="@drawable/login_btn_selector"
+            android:text="@string/exit" />
     </LinearLayout>
 
 </RelativeLayout>

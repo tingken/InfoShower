@@ -20,9 +20,11 @@ public class LoginFailActivity extends Activity {
 		@Override
 		public void run() {
 			// go to Login Page
-			Intent intent = new Intent(LoginFailActivity.this, LoginActivity.class);
+			LoginFailActivity.this.finish();
+			// Intent intent = new Intent(LoginFailActivity.this,
+			// LoginActivity.class);
 			// whether add old regNum
-			startActivity(intent);
+			// startActivity(intent);
 		}
 
 	};

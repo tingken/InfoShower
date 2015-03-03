@@ -1,6 +1,8 @@
 package com.tingken.infoshower.view;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -22,9 +24,12 @@ public class LoginInvalidActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// go to Login page
-				Intent intent = new Intent(LoginInvalidActivity.this, LoginActivity.class);
-				startActivity(intent);
+				// back to Login page
+				// Intent intent = new Intent(LoginInvalidActivity.this,
+				// LoginActivity.class);
+				// intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				// startActivity(intent);
+				LoginInvalidActivity.this.finish();
 			}
 		});
 		btnExit = (Button) findViewById(R.id.btnExit);
@@ -33,6 +38,10 @@ public class LoginInvalidActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// exit
+				Intent startMain = new Intent(Intent.ACTION_MAIN);
+				startMain.addCategory(Intent.CATEGORY_HOME);
+				startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(startMain);
 				System.exit(0);
 			}
 		});

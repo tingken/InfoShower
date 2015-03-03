@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,6 +55,8 @@ public class WelcomActivity extends Activity {
 	 * The flags to pass to {@link SystemUiHider#getInstance}.
 	 */
 	private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
+
+	protected static final String TAG = "effort";
 
 	/**
 	 * The instance of the {@link SystemUiHider} for this activity.
@@ -173,20 +176,28 @@ public class WelcomActivity extends Activity {
 			// check login status
 			if (dataSource.getAuthCode() != null) {
 				// try to login background
-				AuthResult authResult = showService.authenticate(dataSource.getAuthCode(), dataSource.getResolution());
-				if (authResult.isAuthSuccess()) {
+				AuthResult authResult = null;
+				try {
+					authResult = showService.authenticate(dataSource.getAuthCode(), dataSource.getResolution());
+				} catch (Exception e) {
+					Log.e(TAG, "authenticate failed", e);
+				}
+				if (authResult != null && authResult.isAuthSuccess()) {
 					// go to main page
 					Intent intent = new Intent(WelcomActivity.this, MainActivity.class);
 					intent.putExtra("content_page_address", dataSource.getCachedServerAddress());
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(intent);
 				} else {
 					// go to Login page
 					Intent intent = new Intent(WelcomActivity.this, LoginActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(intent);
 				}
 			} else {
 				// go to Login page
 				Intent intent = new Intent(WelcomActivity.this, LoginActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				// intent.putExtra("content_page_address",
 				// dataSource.getCachedServerAddress());
 				startActivity(intent);

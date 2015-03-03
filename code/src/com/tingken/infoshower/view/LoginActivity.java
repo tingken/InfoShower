@@ -75,6 +75,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			switch (msg.what) {
 			case 0:
 				intent = new Intent(LoginActivity.this, LoginSuccessActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;
 			case 1:
@@ -83,6 +84,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 				break;
 			case 2:
 				intent = new Intent(LoginActivity.this, LoginInvalidActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				break;
 			}

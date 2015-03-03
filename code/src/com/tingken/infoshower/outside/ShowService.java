@@ -8,14 +8,14 @@ import java.util.Date;
 
 /**
  * @author tingken.com
- *
+ * 
  */
 public interface ShowService {
-	
-	AuthResult authenticate(String authCode, String dimension);
-	
+
+	AuthResult authenticate(String authCode, String dimension) throws Exception;
+
 	ServerCommand heartBeat(String authCode);
-	
+
 	boolean uploadScreen(String authCode, Date captureTime, File capture);
 
 }

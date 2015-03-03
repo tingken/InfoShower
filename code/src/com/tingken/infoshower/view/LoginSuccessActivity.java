@@ -35,6 +35,7 @@ public class LoginSuccessActivity extends Activity {
 		@Override
 		public void handleMessage(Message msg) {
 			Intent intent = new Intent(LoginSuccessActivity.this, MainActivity.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			intent.putExtra("content_page_address", dataSource.getCachedServerAddress());
 			startActivity(intent);
 
