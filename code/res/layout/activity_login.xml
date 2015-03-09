@@ -18,7 +18,7 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="8px"
         android:visibility="gone" />
 
     <ScrollView
@@ -31,13 +31,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|center_horizontal"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32px"
             android:orientation="vertical" >
 
             <EditText
                 android:id="@+id/regnum"
-                android:layout_width="match_parent"
+                android:layout_width="190dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="218px"
                 android:hint="@string/prompt_regnum"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
@@ -49,6 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|center_horizontal"
+                android:layout_marginTop="54px"
                 android:orientation="horizontal" >
 
                 <Button
@@ -56,9 +58,8 @@
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="22px"
                     android:background="@drawable/login_btn_selector"
-                    android:paddingRight="10dp"
                     android:text="@string/ok"
                     android:textStyle="bold" />
 
@@ -67,10 +68,8 @@
                     style="@style/ButtonBarButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/login_btn_selector"
-                    android:paddingLeft="10dp"
+                    android:layout_marginLeft="30px"
+                    android:background="@drawable/cancel_btn_selector"
                     android:text="@string/cancel" />
             </LinearLayout>
         </LinearLayout>

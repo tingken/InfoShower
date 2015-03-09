@@ -111,6 +111,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 				return false;
 			}
 		});
+		mAuthcodeView.setText(dataSource.getResolution());
 
 		Button mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
 		mEmailSignInButton.setOnClickListener(new OnClickListener() {

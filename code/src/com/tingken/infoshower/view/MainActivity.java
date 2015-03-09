@@ -16,6 +16,7 @@ import com.tingken.infoshower.outside.ServerCommand;
 import com.tingken.infoshower.outside.ShowService;
 import com.tingken.infoshower.outside.ShowServiceFactory;
 import com.tingken.infoshower.outside.test.MockShowServiceImpl;
+import com.tingken.infoshower.util.ScreenCaptureHelper;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -23,6 +24,8 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -77,61 +80,86 @@ public class MainActivity extends Activity {
 		});
 
 		String contentPageAddress = getIntent().getStringExtra("content_page_address");
-		if (contentPageAddress != null) {
-			webContent.loadUrl(contentPageAddress);
-		}
+		// if (contentPageAddress != null) {
+		// webContent.loadUrl(contentPageAddress);
+		// }
 	}
 
 	@Override
 	protected void onStart() {
 		// start timer to monitor server commands
-		// if (serverListener == null) {
-		// // Log.e(TAG, "定时更新数据");
-		// serverListener = new Timer(true);
-		// // 每隔一段时间更新UI
-		// serverListener.schedule(new TimerTask() {
-		//
-		// @Override
-		// public void run() {
-		// // Get Server Command
-		// // If connection failed, popup connection notice
-		// ServerCommand command =
-		// showService.heartBeat(dataSource.getAuthCode());
-		// boolean networkAccessable = true;
-		// switch (command) {
-		// case SCREEN_CAPTURE:
-		// // capture
-		// break;
-		// case RESTART:
-		// // notice restart and prepare to do
-		// break;
-		// case CONNECTION_FAILED:
-		// // notice connection failed and save status
-		// networkAccessable = false;
-		// openConnectionNote();
-		// break;
-		// }
-		// if (networkAccessable && connectionNoticeOpened) {
-		// // close
-		// closeConnectionNote();
-		// }
-		// }
-		//
-		// }, 0, 1 * 60 * 1000);
-		// }
+		if (serverListener == null) {
+			// Log.e(TAG, "定时更新数据");
+			serverListener = new Timer(true);
+			// 每隔一段时间更新UI
+			serverListener.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					// Get Server Command
+					// If connection failed, popup connection notice
+					ServerCommand command = showService.heartBeat(dataSource.getAuthCode());
+					boolean networkAccessable = true;
+					switch (command) {
+					case SCREEN_CAPTURE:
+						// capture
+						break;
+					case RESTART:
+						// notice restart and prepare to do
+						break;
+					case CONNECTION_FAILED:
+						// notice connection failed and save status
+						networkAccessable = false;
+						showServiceHandler.sendEmptyMessage(2);
+						break;
+					}
+					if (networkAccessable && connectionNoticeOpened) {
+						// close
+						// closeConnectionNote();
+					}
+				}
+
+			}, 0, 1 * 60 * 1000);
+		}
 
 		super.onStart();
 	}
 
+	private Handler showServiceHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			Intent intent;
+			switch (msg.what) {
+			case 0:
+				// screen capture
+				break;
+			case 1:
+				// restart
+				break;
+			case 2:
+				// open connection failed notice
+				openConnectionNote();
+				break;
+			case 3:
+				// close connection failed notice
+				closeConnectionNote();
+			}
+			super.handleMessage(msg);
+		}
+
+	};
+
 	protected void openConnectionNote() {
+		if (!connectionNoticeOpened) {
+			LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+			// 引入窗口配置文件
+			View view = inflater.inflate(R.layout.connection_failed_note, null);
+			connectionFailedNotice = new PopupWindow(view);
+			connectionFailedNotice.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.BOTTOM, 0, 0);
 
-		LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-		// 引入窗口配置文件
-		View view = inflater.inflate(R.layout.connection_failed_notice, null);
-		connectionFailedNotice = new PopupWindow(view);
-		connectionFailedNotice.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.NO_GRAVITY, 0, 0);
-
-		connectionNoticeOpened = true;
+			connectionNoticeOpened = true;
+		}
 	}
 
 	protected void closeConnectionNote() {
@@ -157,11 +185,24 @@ public class MainActivity extends Activity {
 		// handle the key from controller
 		switch (keyCode) {
 		case KeyEvent.KEYCODE_NUMPAD_0:
+			openConnectionNote();
+			try {
+				ScreenCaptureHelper.savePic(ScreenCaptureHelper.takeScreenShot(MainActivity.this),
+						openFileOutput("sc.png", MODE_PRIVATE));
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 			//
-			savePic(takeScreenShot(MainActivity.this), "sdcard/Download/sc.png");
+			// ScreenCaptureHelper
+			// .savePic(ScreenCaptureHelper.takeScreenShot(MainActivity.this),
+			// "sdcard/Download/sc.png");
 			return true;
 		case KeyEvent.KEYCODE_BACK:
 			// close menu if it's open
+			if (popMenu != null) {
+				closeMenu();
+				return true;
+			}
 			break;
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 			// execute if menu is open
@@ -169,7 +210,8 @@ public class MainActivity extends Activity {
 				return true;
 			} else {
 				// open menu
-				openMenu();
+				// openMenu();
+				showServiceHandler.sendEmptyMessage(2);
 				return true;
 			}
 		case KeyEvent.KEYCODE_DPAD_UP:
@@ -316,44 +358,4 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	// 获取指定Activity的截屏，保存到png文件
-	private static Bitmap takeScreenShot(Activity activity) {
-		// View是你需要截图的View
-		View view = activity.getWindow().getDecorView();
-		view.setDrawingCacheEnabled(true);
-		view.buildDrawingCache();
-		Bitmap b1 = view.getDrawingCache();
-
-		// 获取状态栏高度
-		Rect frame = new Rect();
-		activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-		int statusBarHeight = frame.top;
-		Log.i("TAG", "" + statusBarHeight);
-
-		// 获取屏幕长和高
-		int width = activity.getWindowManager().getDefaultDisplay().getWidth();
-		int height = activity.getWindowManager().getDefaultDisplay().getHeight();
-		// 去掉标题栏
-		// Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
-		Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, height - statusBarHeight);
-		view.destroyDrawingCache();
-		return b;
-	}
-
-	// 保存到sdcard
-	private static void savePic(Bitmap b, String strFileName) {
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(strFileName);
-			if (null != fos) {
-				b.compress(Bitmap.CompressFormat.PNG, 90, fos);
-				fos.flush();
-				fos.close();
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }

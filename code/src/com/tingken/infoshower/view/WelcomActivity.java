@@ -1,5 +1,7 @@
 package com.tingken.infoshower.view;
 
+import java.io.FileNotFoundException;
+
 import com.tingken.infoshower.R;
 import com.tingken.infoshower.R.id;
 import com.tingken.infoshower.R.layout;
@@ -24,6 +26,7 @@ import com.tingken.infoshower.outside.AuthResult;
 import com.tingken.infoshower.outside.ShowService;
 import com.tingken.infoshower.outside.ShowServiceFactory;
 import com.tingken.infoshower.outside.test.MockShowServiceImpl;
+import com.tingken.infoshower.util.ScreenCaptureHelper;
 import com.tingken.infoshower.util.SystemUiHider;
 
 /**
@@ -188,13 +191,16 @@ public class WelcomActivity extends Activity {
 					intent.putExtra("content_page_address", dataSource.getCachedServerAddress());
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(intent);
+					finish();
 				} else {
+					finish();
 					// go to Login page
 					Intent intent = new Intent(WelcomActivity.this, LoginActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(intent);
 				}
 			} else {
+				finish();
 				// go to Login page
 				Intent intent = new Intent(WelcomActivity.this, LoginActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

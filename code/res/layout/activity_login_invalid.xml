@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="44px"
-            android:background="@drawable/login_btn_selector"
+            android:background="@drawable/cancel_btn_selector"
             android:text="@string/exit" />
     </LinearLayout>
 
