@@ -21,18 +21,21 @@ import com.tingken.infoshower.util.ScreenCaptureHelper;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnKeyListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -149,13 +152,18 @@ public class MainActivity extends Activity {
 		}
 
 	};
+	private PopupWindow restartNotice;
 
 	protected void openConnectionNote() {
 		if (!connectionNoticeOpened) {
+			WindowManager windowManager = getWindowManager();
+			Display display = windowManager.getDefaultDisplay();
+			Point outSize = new Point();
+			display.getSize(outSize);
 			LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 			// 引入窗口配置文件
 			View view = inflater.inflate(R.layout.connection_failed_note, null);
-			connectionFailedNotice = new PopupWindow(view);
+			connectionFailedNotice = new PopupWindow(view, outSize.x, outSize.y, false);
 			connectionFailedNotice.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.BOTTOM, 0, 0);
 
 			connectionNoticeOpened = true;
@@ -211,7 +219,8 @@ public class MainActivity extends Activity {
 			} else {
 				// open menu
 				// openMenu();
-				showServiceHandler.sendEmptyMessage(2);
+				// showServiceHandler.sendEmptyMessage(2);
+				openConnectionNote();
 				return true;
 			}
 		case KeyEvent.KEYCODE_DPAD_UP:
@@ -287,7 +296,7 @@ public class MainActivity extends Activity {
 			}
 		});
 		btnChangeAutoStart = (Button) view.findViewById(R.id.btnChangeAutoStart);
-		btnChangeRegnum.setOnClickListener(new View.OnClickListener() {
+		btnChangeAutoStart.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -296,7 +305,7 @@ public class MainActivity extends Activity {
 			}
 		});
 		btnExit = (Button) view.findViewById(R.id.btnExit);
-		btnChangeRegnum.setOnClickListener(new View.OnClickListener() {
+		btnExit.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -355,6 +364,33 @@ public class MainActivity extends Activity {
 			btnChangeAutoStart.setVisibility(View.INVISIBLE);
 			btnExit.setVisibility(View.INVISIBLE);
 			break;
+		}
+	}
+
+	private void restartApp() {
+		Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+		i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(i);
+	}
+
+	private void openRestartNotice() {
+		if (restartNotice == null) {
+			WindowManager windowManager = getWindowManager();
+			Display display = windowManager.getDefaultDisplay();
+			Point outSize = new Point();
+			display.getSize(outSize);
+			// create view and PopupWindow
+			LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+			View view = inflater.inflate(R.layout.activity_restart_alert, null);
+			restartNotice = new PopupWindow(view, outSize.x, outSize.y, false);
+			restartNotice.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.CENTER, 0, 0);
+		}
+	}
+
+	private void closeRestartNotice() {
+		if (restartNotice != null) {
+			restartNotice.dismiss();
+			restartNotice = null;
 		}
 	}
 

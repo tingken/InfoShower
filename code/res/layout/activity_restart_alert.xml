@@ -9,6 +9,7 @@
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center|center_horizontal"
         android:src="@drawable/restart_alert_bg" />
 
     <LinearLayout
