@@ -79,7 +79,7 @@ public class WelcomActivity extends Activity {
 		setContentView(R.layout.activity_welcom);
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
-		final View contentView = findViewById(R.id.fullscreen_content);
+		// final View contentView = findViewById(R.id.fullscreen_content);
 
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.

@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_bg"
-    android:gravity="center_horizontal"
+    android:background="@drawable/bg"
+    android:gravity="center|center_horizontal"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -32,19 +32,50 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|center_horizontal"
             android:layout_marginTop="32px"
+            android:background="@drawable/alert_bg"
             android:orientation="vertical" >
 
-            <EditText
-                android:id="@+id/regnum"
-                android:layout_width="190dp"
+            <TextView
+                android:id="@+id/title_activity_login"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="32px"
+                android:gravity="center"
+                android:keepScreenOn="true"
+                android:text="@string/title_activity_login"
+                android:textColor="#ffffff"
+                android:textSize="42px" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="218px"
-                android:hint="@string/prompt_regnum"
-                android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified"
-                android:maxLines="1"
-                android:singleLine="true" />
+                android:layout_gravity="center|center_horizontal"
+                android:layout_marginTop="116px"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/notice_input_regnum"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:keepScreenOn="true"
+                    android:text="@string/notice_input_regnum"
+                    android:textColor="#ffffff"
+                    android:textSize="36px" />
+
+                <EditText
+                    android:id="@+id/regnum"
+                    android:layout_width="390px"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20px"
+                    android:hint="@string/prompt_regnum"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="36px" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"

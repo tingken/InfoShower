@@ -2,36 +2,79 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_invalid"
+    android:background="@drawable/bg"
     android:gravity="center|center_horizontal"
     tools:context="${relativePackage}.${activityClass}" >
 
     <LinearLayout
-        android:id="@+id/email_login_form"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|center_horizontal"
-        android:layout_marginTop="292px"
-        android:orientation="horizontal" >
+        android:layout_marginTop="30px"
+        android:background="@drawable/notice_bg"
+        android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/btnRetry"
-            style="@style/ButtonBarButton"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3px"
-            android:layout_marginLeft="26px"
-            android:background="@drawable/login_btn_selector"
-            android:text="@string/retry" />
+            android:layout_gravity="center|center_horizontal"
+            android:layout_marginTop="70px"
+            android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/btnExit"
-            style="@style/ButtonBarButton"
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/query" />
+
+            <TextView
+                android:id="@+id/invalid_auth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:keepScreenOn="true"
+                android:text="@string/invalid_auth"
+                android:textColor="#ffffff"
+                android:textSize="56px" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:keepScreenOn="true"
+            android:layout_marginTop="40px"
+            android:text="@string/invalid_auth_for_connection_error"
+            android:textColor="#ffffff"
+            android:textSize="36px" />
+
+        <LinearLayout
+            android:id="@+id/email_login_form"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="44px"
-            android:background="@drawable/cancel_btn_selector"
-            android:text="@string/exit" />
+            android:layout_gravity="center|center_horizontal"
+            android:layout_marginTop="12px"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btnRetry"
+                style="@style/ButtonBarButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3px"
+                android:layout_marginLeft="26px"
+                android:background="@drawable/login_btn_selector"
+                android:text="@string/retry" />
+
+            <Button
+                android:id="@+id/btnExit"
+                style="@style/ButtonBarButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24px"
+                android:background="@drawable/cancel_btn_selector"
+                android:text="@string/exit" />
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>
