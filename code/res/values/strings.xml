@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">InfoShower</string>
+    <string name="app_name">信息显示系统</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="status_content">载入中，请稍等…</string>
     <string name="welcome_word">欢迎进入信息显示系统</string>
@@ -14,7 +14,7 @@
     <string name="title_activity_login_invalid">LoginInvalidActivity</string>
     <string name="exit">退出</string>
     <string name="title_activity_restart_alert">即将重启</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">设置</string>
     <string name="current_version_info">(当前版本1.0）</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="retry">重试</string>
@@ -24,5 +24,17 @@
     <string name="title_auth_succeed">认证成功！</string>
     <string name="auth_succeed_to_login">认证成功，即将显示信息！</string>
     <string name="restart_alert">信息显示系统即将重启！</string>
+    <string name="btn_change_regnum">修改验证码</string>
+    <string name="btn_change_autostart">自动启动</string>
+    <string name="action_on">开</string>
+    <string name="action_off">关</string>
+    <string name="title_exit_alert">确认退出</string>
+    <string name="exit_app_alert">你是否确认退出信息显示系统？</string>
+    <string name="title_upgrade">版本更新！</string>
+    <string name="network_disconnect_alert">网络异常，已与服务器连接断开，请检查网络，重试连接（%1）</string>
+    <string name="title_config_server_address">服务器地址设置</string>
+    <string name="prompt_input_server_address">请输入新地址</string>
+    <string name="prompt_server_address">服务器地址</string>
+    <string name="action_change">修改</string>
 
 </resources>

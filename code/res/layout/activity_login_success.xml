@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_success"
+    android:background="@drawable/bg"
     android:gravity="center|center_horizontal"
     tools:context="${relativePackage}.${activityClass}" >
 
@@ -51,7 +51,7 @@
 
         <ProgressBar
             android:id="@+id/progressBar1"
-            style="?android:attr/progressBarStyleSmall"
+            style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

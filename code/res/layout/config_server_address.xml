@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center|center_horizontal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/email_login_form"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|center_horizontal"
+        android:layout_marginTop="260px"
+        android:background="@drawable/alert_bg"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/title_config_server_address"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="32px"
+            android:gravity="center"
+            android:keepScreenOn="true"
+            android:text="@string/title_config_server_address"
+            android:textColor="#ffffff"
+            android:textSize="42px" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|center_horizontal"
+            android:layout_marginTop="116px"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/prompt_input_server_address"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:keepScreenOn="true"
+                android:text="@string/prompt_input_server_address"
+                android:textColor="#ffffff"
+                android:textSize="36px" />
+
+            <EditText
+                android:id="@+id/edit_server_address"
+                android:layout_width="390px"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20px"
+                android:hint="@string/prompt_server_address"
+                android:imeActionId="@+id/login"
+                android:imeActionLabel="@string/action_change"
+                android:imeOptions="actionUnspecified"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textSize="36px" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|center_horizontal"
+            android:layout_marginTop="54px"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btn_config"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="22px"
+                android:background="@drawable/submit_btn_selector"
+                android:text="@string/ok"
+                android:textSize="24px"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/cancel"
+                style="@style/ButtonBarButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30px"
+                android:background="@drawable/cancel_btn_selector"
+                android:text="@string/cancel"
+                android:textSize="24px" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

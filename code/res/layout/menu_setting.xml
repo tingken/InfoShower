@@ -1,37 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@drawable/menu_bg"
-    android:orientation="vertical" >
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
-    <Button
-        android:id="@+id/btnChangeRegnum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="28px"
-        android:layout_marginTop="62dp"
-        android:background="@drawable/btn_change_regnum"
-        android:padding="0px" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="120px"
+        android:layout_marginTop="60px" >
 
-    <Button
-        android:id="@+id/btnChangeAutoStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="28px"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/btn_change_autostart"
-        android:padding="0px"
-        android:visibility="invisible" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50px"
+            android:background="@drawable/setting_bg"
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/btnExit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="28px"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/btn_exit"
-        android:padding="0px"
-        android:visibility="gone" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="13px"
+                android:layout_marginTop="30px"
+                android:focusable="true"
+                android:gravity="center"
+                android:keepScreenOn="true"
+                android:text="@string/action_settings"
+                android:textColor="#ffffff"
+                android:textSize="42px" />
 
-</LinearLayout>
+            <Button
+                android:id="@+id/btnChangeRegnum"
+                android:layout_width="300px"
+                android:layout_height="96px"
+                android:layout_marginTop="38px"
+                android:background="@drawable/list_item_selector"
+                android:drawablePadding="30px"
+                android:drawableStart="@drawable/change_ico"
+                android:gravity="left|center"
+                android:padding="0px"
+                android:text="@string/btn_change_regnum"
+                android:textColor="#ffffff"
+                android:textSize="32px" />
+
+            <Button
+                android:id="@+id/btnChangeAutoStart"
+                android:layout_width="300px"
+                android:layout_height="96px"
+                android:layout_marginTop="-6px"
+                android:background="@drawable/list_item_selector"
+                android:drawablePadding="30px"
+                android:drawableStart="@drawable/reboot_ico"
+                android:gravity="left|center"
+                android:padding="0px"
+                android:text="@string/btn_change_autostart"
+                android:textColor="#ffffff"
+                android:textSize="32px" />
+
+            <Button
+                android:id="@+id/btnExit"
+                android:layout_width="300px"
+                android:layout_height="96px"
+                android:layout_marginTop="-6px"
+                android:background="@drawable/list_item_selector"
+                android:drawablePadding="30px"
+                android:drawableStart="@drawable/power_off_ico"
+                android:gravity="left|center"
+                android:padding="0px"
+                android:text="@string/exit"
+                android:textColor="#ffffff"
+                android:textSize="32px" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="430px"
+            android:layout_marginTop="112px"
+            android:gravity="left|center"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/child_menu_change_reg_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/change_reg_num_bg"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="invisible" >
+
+                <EditText
+                    android:id="@+id/edit_reg_num"
+                    android:layout_width="280px"
+                    android:layout_height="70px"
+                    android:layout_marginLeft="50px"
+                    android:layout_marginTop="10px"
+                    android:ems="10"
+                    android:textSize="32px" >
+
+                    <requestFocus />
+                </EditText>
+
+                <Button
+                    android:id="@+id/btn_apply_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5px"
+                    android:background="@drawable/apply_btn_selector" >
+                </Button>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/child_menu_change_auto_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-7px"
+                android:background="@drawable/change_auto_start_bg"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="invisible" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12px"
+                    android:layout_marginTop="2px"
+                    android:gravity="center_vertical"
+                    android:keepScreenOn="true"
+                    android:text="@string/action_on"
+                    android:textColor="#ffffff"
+                    android:textSize="32px" />
+
+                <Button
+                    android:id="@+id/btn_switch_auto_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0px"
+                    android:background="@drawable/on_btn_selector" >
+                </Button>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0px"
+                    android:layout_marginTop="2px"
+                    android:gravity="center_vertical"
+                    android:keepScreenOn="true"
+                    android:text="@string/action_off"
+                    android:textColor="#ffffff"
+                    android:textSize="32px" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+</FrameLayout>

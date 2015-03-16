@@ -10,8 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|center_horizontal"
-        android:layout_marginTop="30px"
-        android:background="@drawable/notice_bg"
+        android:layout_marginTop="120px"
+        android:background="@drawable/notice_selection_bg"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -41,9 +41,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="60px"
             android:gravity="center"
             android:keepScreenOn="true"
-            android:layout_marginTop="40px"
             android:text="@string/invalid_auth_for_connection_error"
             android:textColor="#ffffff"
             android:textSize="36px" />
@@ -63,8 +63,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3px"
                 android:layout_marginLeft="26px"
-                android:background="@drawable/login_btn_selector"
-                android:text="@string/retry" />
+                android:background="@drawable/submit_btn_selector"
+                android:text="@string/retry"
+                android:textSize="24px" />
 
             <Button
                 android:id="@+id/btnExit"
@@ -73,7 +74,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24px"
                 android:background="@drawable/cancel_btn_selector"
-                android:text="@string/exit" />
+                android:text="@string/exit"
+                android:textSize="24px" />
         </LinearLayout>
     </LinearLayout>
 

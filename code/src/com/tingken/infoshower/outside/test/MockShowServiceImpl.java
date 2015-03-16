@@ -11,16 +11,16 @@ public class MockShowServiceImpl implements ShowService {
 
 	@Override
 	public AuthResult authenticate(String authCode, String dimension) throws Exception {
-//		AuthResult result = new AuthResult();
-//		result.setAuthSuccess(true);
-//		result.setShowPageAddress("http://www.sohu.com");
-//		return result;
-		throw new Exception("Connection failed");
+		AuthResult result = new AuthResult();
+		result.setAuthSuccess(true);
+		result.setShowPageAddress("http://www.sohu.com");
+		return result;
+		// throw new Exception("Connection failed");
 	}
 
 	@Override
 	public ServerCommand heartBeat(String authCode) {
-		return ServerCommand.CONNECTION_FAILED;
+		return ServerCommand.None;
 	}
 
 	@Override

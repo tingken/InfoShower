@@ -90,8 +90,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="22px"
-                    android:background="@drawable/login_btn_selector"
+                    android:background="@drawable/submit_btn_selector"
                     android:text="@string/ok"
+                    android:textSize="24px"
                     android:textStyle="bold" />
 
                 <Button
@@ -101,7 +102,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30px"
                     android:background="@drawable/cancel_btn_selector"
-                    android:text="@string/cancel" />
+                    android:text="@string/cancel"
+                    android:textSize="24px" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

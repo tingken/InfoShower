@@ -36,13 +36,14 @@ import com.tingken.infoshower.R;
 import com.tingken.infoshower.R.id;
 import com.tingken.infoshower.R.layout;
 import com.tingken.infoshower.R.string;
-import com.tingken.infoshower.core.DataSource;
-import com.tingken.infoshower.core.DataSourceFactory;
-import com.tingken.infoshower.core.test.MockDataSource;
+import com.tingken.infoshower.core.LocalService;
+import com.tingken.infoshower.core.LocalServiceFactory;
+import com.tingken.infoshower.core.test.MockLocalService;
 import com.tingken.infoshower.outside.AuthResult;
 import com.tingken.infoshower.outside.ShowService;
 import com.tingken.infoshower.outside.ShowServiceFactory;
 import com.tingken.infoshower.outside.test.MockShowServiceImpl;
+import com.tingken.infoshower.util.SystemUtils;
 
 /**
  * A login screen that offers login via email/password.
@@ -65,7 +66,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 	private View mLoginFormView;
 
 	private ShowService showService = ShowServiceFactory.getSystemShowService();
-	private DataSource dataSource = DataSourceFactory.getSystemDataSource();
+	private LocalService localService = LocalServiceFactory.getSystemLocalService();
 
 	private Handler loginHandler = new Handler() {
 
@@ -77,6 +78,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 				intent = new Intent(LoginActivity.this, LoginSuccessActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
+				// LoginActivity.this.finish();
 				break;
 			case 1:
 				intent = new Intent(LoginActivity.this, LoginFailActivity.class);
@@ -86,6 +88,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 				intent = new Intent(LoginActivity.this, LoginInvalidActivity.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
+				// LoginActivity.this.finish();
 				break;
 			}
 			super.handleMessage(msg);
@@ -111,7 +114,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 				return false;
 			}
 		});
-		mAuthcodeView.setText(dataSource.getResolution());
 
 		Button mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
 		mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -279,7 +281,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			AuthResult authResult = null;
 			try {
 				// Simulate network access.
-				authResult = showService.authenticate(mAuthCode, dataSource.getResolution());
+				authResult = showService.authenticate(mAuthCode, SystemUtils.getResolution(LoginActivity.this));
 			} catch (Exception e) {
 				// network exception, go to Login Invalid Page
 				loginHandler.sendEmptyMessage(2);
@@ -289,6 +291,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			if (authResult != null) {
 				if (authResult.isAuthSuccess()) {
 					// save server address
+					localService.saveAuthCode(mAuthCode);
+					localService.saveCachedServerAddress(authResult.getShowPageAddress());
 					// go to Login Success Page
 					loginHandler.sendEmptyMessage(0);
 				} else {

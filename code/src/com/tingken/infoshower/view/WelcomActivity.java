@@ -19,15 +19,16 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.tingken.infoshower.UpgradeNoticeActivity;
-import com.tingken.infoshower.core.DataSource;
-import com.tingken.infoshower.core.DataSourceFactory;
-import com.tingken.infoshower.core.test.MockDataSource;
+import com.tingken.infoshower.core.LocalService;
+import com.tingken.infoshower.core.LocalServiceFactory;
+import com.tingken.infoshower.core.test.MockLocalService;
 import com.tingken.infoshower.outside.AuthResult;
 import com.tingken.infoshower.outside.ShowService;
 import com.tingken.infoshower.outside.ShowServiceFactory;
 import com.tingken.infoshower.outside.test.MockShowServiceImpl;
 import com.tingken.infoshower.util.ScreenCaptureHelper;
 import com.tingken.infoshower.util.SystemUiHider;
+import com.tingken.infoshower.util.SystemUtils;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -66,7 +67,7 @@ public class WelcomActivity extends Activity {
 	 */
 	// private SystemUiHider mSystemUiHider;
 
-	private DataSource dataSource = DataSourceFactory.getSystemDataSource();
+	private LocalService localService;
 	private ShowService showService = ShowServiceFactory.getSystemShowService();
 
 	@Override
@@ -75,6 +76,8 @@ public class WelcomActivity extends Activity {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		super.onCreate(savedInstanceState);
+		LocalServiceFactory.init(this);
+		localService = LocalServiceFactory.getSystemLocalService();
 
 		setContentView(R.layout.activity_welcom);
 
@@ -177,18 +180,19 @@ public class WelcomActivity extends Activity {
 		@Override
 		public void run() {
 			// check login status
-			if (dataSource.getAuthCode() != null) {
+			if (localService.getAuthCode() != null && localService.getAuthCode().trim().length() > 0) {
 				// try to login background
 				AuthResult authResult = null;
 				try {
-					authResult = showService.authenticate(dataSource.getAuthCode(), dataSource.getResolution());
+					authResult = showService.authenticate(localService.getAuthCode(),
+							SystemUtils.getResolution(WelcomActivity.this));
 				} catch (Exception e) {
 					Log.e(TAG, "authenticate failed", e);
 				}
 				if (authResult != null && authResult.isAuthSuccess()) {
 					// go to main page
 					Intent intent = new Intent(WelcomActivity.this, MainActivity.class);
-					intent.putExtra("content_page_address", dataSource.getCachedServerAddress());
+					intent.putExtra("content_page_address", authResult.getShowPageAddress());
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(intent);
 					finish();

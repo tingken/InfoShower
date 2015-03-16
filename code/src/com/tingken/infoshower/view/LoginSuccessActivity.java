@@ -2,8 +2,8 @@ package com.tingken.infoshower.view;
 
 import com.tingken.infoshower.R;
 import com.tingken.infoshower.R.layout;
-import com.tingken.infoshower.core.DataSource;
-import com.tingken.infoshower.core.DataSourceFactory;
+import com.tingken.infoshower.core.LocalService;
+import com.tingken.infoshower.core.LocalServiceFactory;
 import com.tingken.infoshower.view.LoginActivity.UserLoginTask;
 
 import android.app.Activity;
@@ -19,7 +19,7 @@ public class LoginSuccessActivity extends Activity {
 
 	private static final int AUTO_DELAY_MILLIS = 3000;
 
-	private DataSource dataSource = DataSourceFactory.getSystemDataSource();
+	private LocalService dataSource = LocalServiceFactory.getSystemLocalService();
 	private Handler mSwitchHandler = new Handler();
 	private Runnable mSwitchPageRunnable = new Runnable() {
 
@@ -34,6 +34,7 @@ public class LoginSuccessActivity extends Activity {
 
 		@Override
 		public void handleMessage(Message msg) {
+			LoginSuccessActivity.this.finish();
 			Intent intent = new Intent(LoginSuccessActivity.this, MainActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			intent.putExtra("content_page_address", dataSource.getCachedServerAddress());

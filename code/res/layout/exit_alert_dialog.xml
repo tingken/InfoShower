@@ -1,39 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center|center_horizontal" >
+    android:layout_gravity="center|center_horizontal"
+    android:layout_marginTop="40px"
+    android:background="@drawable/notice_bg"
+    android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/imageView1"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/exit_alert_bg" />
+        android:layout_gravity="center|center_horizontal"
+        android:layout_marginTop="80px"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/exit_tag" />
+
+        <TextView
+            android:id="@+id/title_exit_alert"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:keepScreenOn="true"
+            android:text="@string/title_exit_alert"
+            android:textColor="#ffffff"
+            android:textSize="56px" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginTop="50px"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:text="@string/exit_app_alert"
+        android:textColor="#ffffff"
+        android:textSize="36px" />
 
     <LinearLayout
         android:id="@+id/email_login_form"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|center_horizontal"
-        android:layout_marginTop="67dp"
+        android:layout_marginTop="12px"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/exit"
             style="@style/ButtonBarButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dp"
-            android:layout_marginLeft="5dp"
-            android:background="@drawable/retry" />
+            android:layout_marginBottom="48px"
+            android:layout_marginLeft="25px"
+            android:background="@drawable/submit_btn_selector"
+            android:text="@string/ok"
+            android:textSize="24px" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/cancel"
             style="@style/ButtonBarButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="22dp"
-            android:background="@drawable/exit" />
+            android:layout_marginLeft="18px"
+            android:background="@drawable/cancel_btn_selector"
+            android:text="@string/cancel"
+            android:textSize="24px" />
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>
