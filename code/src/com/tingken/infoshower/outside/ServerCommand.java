@@ -8,5 +8,5 @@ package com.tingken.infoshower.outside;
  * 
  */
 public enum ServerCommand {
-	SCREEN_CAPTURE, RESTART, CONNECTION_FAILED, None
+	SCREEN_CAPTURE, RESTART, UPGRADE, CONNECTION_FAILED, None
 }

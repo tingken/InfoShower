@@ -21,22 +21,24 @@ import org.apache.http.util.EntityUtils;
 
 import android.util.Log;
 
-public class RestServiceWorker {
+public class HttpServiceWorker {
 	// private String url =
 	// "http://192.168.0.17:8080/EvaluationService/testLogin/login!json.action";
 	private HttpClient client;
 	private HttpGet getRequest;
-	private HttpPost request;
+	private HttpPost postRequest;
 	private HttpResponse response;
 	private String TAG = "effort";
 
-	public RestServiceWorker() {
+	public HttpServiceWorker() {
 		getRequest = new HttpGet();
-		request = new HttpPost();
+		postRequest = new HttpPost();
 	}
 
 	public void open() {
-		client = new DefaultHttpClient();
+		if (client == null) {
+			client = new DefaultHttpClient();
+		}
 	}
 
 	public String executeGet(String url) throws Exception {
@@ -54,6 +56,13 @@ public class RestServiceWorker {
 			}
 		}
 		return out;
+	}
+
+	public HttpResponse getResponse(String url) throws Exception {
+		open();
+		getRequest.setURI(new URI(url));
+		response = client.execute(getRequest);
+		return response;
 	}
 
 	public InputStream executeGetStream(String url) throws Exception {
@@ -120,13 +129,74 @@ public class RestServiceWorker {
 			// postEntity.addPart(key, cb);
 			// }
 			open();
-			request.setURI(new URI(url));
+			postRequest.setURI(new URI(url));
 			Log.e(TAG, url);
 			// request.setEntity(postEntity);
-			response = client.execute(request);
+			response = client.execute(postRequest);
 			int code = response.getStatusLine().getStatusCode();
 			Log.e(TAG, "postData(),response status code:" + code);
 			if (code == 201) { // 200表示请求成功
+				return true;
+			}
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		// close();
+		return false;
+	}
+
+	public boolean postImage(String filePath, String url) {
+		ContentBody cb = null;
+		MultipartEntity postEntity = new MultipartEntity();
+		try {
+			File file = new File(filePath);
+			ContentBody cbFileData = new FileBody(file);
+			postEntity.addPart("image", cbFileData);
+			open();
+			postRequest.setURI(new URI(url));
+			postRequest.setEntity(postEntity);
+			Log.e(TAG, url);
+			// request.setEntity(postEntity);
+			response = client.execute(postRequest);
+			int code = response.getStatusLine().getStatusCode();
+			Log.e(TAG, "postData(),response status code:" + code);
+			if (code / 200 == 1) {
+				return true;
+			}
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		// close();
+		return false;
+	}
+
+	public boolean postImage(File file, String url) {
+		ContentBody cb = null;
+		MultipartEntity postEntity = new MultipartEntity();
+		try {
+			ContentBody cbFileData = new FileBody(file);
+			postEntity.addPart("image", cbFileData);
+			open();
+			postRequest.setURI(new URI(url));
+			postRequest.setEntity(postEntity);
+			Log.e(TAG, url);
+			// request.setEntity(postEntity);
+			response = client.execute(postRequest);
+			int code = response.getStatusLine().getStatusCode();
+			Log.e(TAG, "postData(),response status code:" + code);
+			if (code / 200 == 1) {
 				return true;
 			}
 		} catch (ClientProtocolException e) {
@@ -156,7 +226,9 @@ public class RestServiceWorker {
 	}
 
 	public void close() {
-		if (client != null)
+		if (client != null) {
 			client.getConnectionManager().shutdown();
+			client = null;
+		}
 	}
 }

@@ -78,6 +78,9 @@ public class WelcomActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		LocalServiceFactory.init(this);
 		localService = LocalServiceFactory.getSystemLocalService();
+		if (localService.getShowServiceAddress() != null) {
+			showService.init(localService.getShowServiceAddress());
+		}
 
 		setContentView(R.layout.activity_welcom);
 
@@ -185,11 +188,13 @@ public class WelcomActivity extends Activity {
 				AuthResult authResult = null;
 				try {
 					authResult = showService.authenticate(localService.getAuthCode(),
+							SystemUtils.getDeviceId(WelcomActivity.this),
 							SystemUtils.getResolution(WelcomActivity.this));
 				} catch (Exception e) {
 					Log.e(TAG, "authenticate failed", e);
 				}
 				if (authResult != null && authResult.isAuthSuccess()) {
+					localService.saveLoginId(authResult.getLoginId());
 					// go to main page
 					Intent intent = new Intent(WelcomActivity.this, MainActivity.class);
 					intent.putExtra("content_page_address", authResult.getShowPageAddress());

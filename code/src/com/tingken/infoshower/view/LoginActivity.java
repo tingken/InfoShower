@@ -281,7 +281,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			AuthResult authResult = null;
 			try {
 				// Simulate network access.
-				authResult = showService.authenticate(mAuthCode, SystemUtils.getResolution(LoginActivity.this));
+				authResult = showService.authenticate(mAuthCode, SystemUtils.getDeviceId(LoginActivity.this),
+						SystemUtils.getResolution(LoginActivity.this));
 			} catch (Exception e) {
 				// network exception, go to Login Invalid Page
 				loginHandler.sendEmptyMessage(2);
@@ -291,6 +292,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			if (authResult != null) {
 				if (authResult.isAuthSuccess()) {
 					// save server address
+					localService.saveLoginId(authResult.getLoginId());
 					localService.saveAuthCode(mAuthCode);
 					localService.saveCachedServerAddress(authResult.getShowPageAddress());
 					// go to Login Success Page

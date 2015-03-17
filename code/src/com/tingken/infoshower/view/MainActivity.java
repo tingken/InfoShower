@@ -1,8 +1,10 @@
 package com.tingken.infoshower.view;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,6 +16,7 @@ import com.tingken.infoshower.core.LocalServiceFactory;
 import com.tingken.infoshower.outside.ServerCommand;
 import com.tingken.infoshower.outside.ShowService;
 import com.tingken.infoshower.outside.ShowServiceFactory;
+import com.tingken.infoshower.outside.rest.HttpServiceWorker;
 import com.tingken.infoshower.util.ScreenCaptureHelper;
 import com.tingken.infoshower.util.UpgradeHelper;
 
@@ -37,6 +40,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnKeyListener;
 import android.view.WindowManager.LayoutParams;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -91,6 +95,13 @@ public class MainActivity extends Activity {
 		});
 
 		String contentPageAddress = getIntent().getStringExtra("content_page_address");
+		webContent.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+		try {
+			HttpServiceWorker httpWorker = new HttpServiceWorker();
+			httpWorker.executeGetStream(contentPageAddress);
+		} catch (Exception e) {
+			webContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+		}
 		if (contentPageAddress != null) {
 			webContent.loadUrl(contentPageAddress);
 		}
@@ -109,14 +120,24 @@ public class MainActivity extends Activity {
 				public void run() {
 					// Get Server Command
 					// If connection failed, popup connection notice
-					ServerCommand command = showService.heartBeat(localService.getAuthCode());
+					ServerCommand command = showService.heartBeat(localService.getLoginId());
 					boolean networkAccessable = true;
 					switch (command) {
 					case SCREEN_CAPTURE:
 						// capture
+						showServiceHandler.sendEmptyMessage(0);
 						break;
 					case RESTART:
 						// notice restart and prepare to do
+						openRestartNotice();
+						serverListener.schedule(new TimerTask() {
+
+							@Override
+							public void run() {
+								restartApp();
+							}
+
+						}, 5000);
 						break;
 					case CONNECTION_FAILED:
 						// notice connection failed and save status
@@ -126,11 +147,13 @@ public class MainActivity extends Activity {
 					}
 					if (networkAccessable && connectionNoticeOpened) {
 						// close
-						// closeConnectionNote();
+						closeConnectionNote();
 					}
 				}
 
-			}, 0, 1 * 60 * 1000);
+			}, 5000, 1 * 60 * 1000);// may be call by several threads on the
+									// same time, that means need to re-start
+									// timer after execute
 		}
 
 		super.onStart();
@@ -154,6 +177,7 @@ public class MainActivity extends Activity {
 	};
 	private UpgradeHelper upgradeHelper = new UpgradeHelper(this, upgradeHandler);
 
+	static int connectionFailedTime = 0;
 	private Handler showServiceHandler = new Handler() {
 
 		@Override
@@ -162,16 +186,30 @@ public class MainActivity extends Activity {
 			switch (msg.what) {
 			case 0:
 				// screen capture
+				Bitmap map = ScreenCaptureHelper.takeScreenShot(MainActivity.this);
+				// File file = new File("sc.png");
+				// new FileOutputStream(file);
+				try {
+					ScreenCaptureHelper.savePic(map, openFileOutput("sc.png", MODE_PRIVATE));
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				showService.uploadScreen(localService.getLoginId(), new Date(),
+						MainActivity.this.getFileStreamPath("sc.png"));
 				break;
 			case 1:
 				// restart
 				break;
 			case 2:
 				// open connection failed notice
-				openConnectionNote();
+				if (++connectionFailedTime > 0) {
+					openConnectionNote();
+				}
 				break;
 			case 3:
 				// close connection failed notice
+				connectionFailedTime = 0;
 				closeConnectionNote();
 			}
 			super.handleMessage(msg);

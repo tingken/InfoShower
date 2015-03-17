@@ -24,6 +24,7 @@ public class LocalServiceImpl implements LocalService {
 
 	private static final String[] ACCOUNT_COLUMN = { "REG_NUM", "CACHED_SERVER_ADDRESS", "OFFLINE_SERVER_PAGE" };
 	private static Context mContext;
+	private static String loginId;
 
 	private SharedPreferences sp;
 
@@ -109,6 +110,16 @@ public class LocalServiceImpl implements LocalService {
 		Editor editor = sp.edit();
 		editor.putString(SHOW_SERVER_ADDRESS, urlPrefix);
 		editor.commit();
+	}
+
+	@Override
+	public void saveLoginId(String loginId) {
+		LocalServiceImpl.loginId = loginId;
+	}
+
+	@Override
+	public String getLoginId() {
+		return LocalServiceImpl.loginId;
 	}
 
 }

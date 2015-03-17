@@ -62,4 +62,16 @@ public class MockLocalService implements LocalService {
 
 	}
 
+	@Override
+	public void saveLoginId(String loginId) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public String getLoginId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

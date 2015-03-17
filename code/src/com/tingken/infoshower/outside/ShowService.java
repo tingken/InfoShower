@@ -12,10 +12,14 @@ import java.util.Date;
  */
 public interface ShowService {
 
-	AuthResult authenticate(String authCode, String dimension) throws Exception;
+	void init(String basicUrl);
 
-	ServerCommand heartBeat(String authCode);
+	AuthResult authenticate(String authCode, String deviceId, String dimension) throws Exception;
+
+	ServerCommand heartBeat(String loginId);
 
 	boolean uploadScreen(String authCode, Date captureTime, File capture);
+
+	VersionInfo getLatestVersion();
 
 }

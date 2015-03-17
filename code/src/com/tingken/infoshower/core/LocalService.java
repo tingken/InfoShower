@@ -27,4 +27,8 @@ public interface LocalService {
 	void setAutoStart(boolean autoStart);
 
 	void saveShowServiceAddress(String urlPrefix);
+
+	void saveLoginId(String loginId);
+
+	String getLoginId();
 }
