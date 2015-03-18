@@ -47,7 +47,7 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/tipTextView"
+                android:id="@+id/current_version_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="0dp"
@@ -55,13 +55,14 @@
                 android:textColor="#ffffff" />
 
             <TextView
+                android:id="@+id/alert_new_version"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginTop="50px"
                 android:gravity="center"
                 android:keepScreenOn="true"
-                android:text="@string/auth_succeed_to_login"
+                android:text="@string/alert_new_version"
                 android:textColor="#ffffff"
                 android:textSize="36px" />
 

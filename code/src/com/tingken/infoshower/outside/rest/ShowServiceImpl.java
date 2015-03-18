@@ -22,7 +22,7 @@ import com.tingken.infoshower.outside.VersionInfo;
  */
 public class ShowServiceImpl implements ShowService {
 
-	private static String serverAddress = "http://127.0.0.1:8080/ShowService/";
+	private static String serverAddress = "http://192.168.2.8:8080/showService-war-1.0/showService/";
 	private HttpServiceWorker restServiceWorker = new HttpServiceWorker();
 
 	/*
@@ -34,7 +34,7 @@ public class ShowServiceImpl implements ShowService {
 	 */
 	@Override
 	public AuthResult authenticate(String authCode, String deviceId, String dimension) {
-		String url = serverAddress + "auth?regNum=" + authCode + "&dimension=" + dimension;
+		String url = serverAddress + "authenticate?regNum=" + authCode + "&dimension=" + dimension;
 		AuthResult result = null;
 		try {
 			HttpResponse response = restServiceWorker.getResponse(url);
@@ -76,10 +76,17 @@ public class ShowServiceImpl implements ShowService {
 					out = EntityUtils.toString(entity, "UTF-8");
 				}
 				JSONObject jsonObject = new JSONObject(out);
-				result = ServerCommand.valueOf(jsonObject.getString("command"));
+				String command = jsonObject.getString("command");
+				if ("null".equals(command)) {
+					result = ServerCommand.NONE;
+				} else {
+					result = ServerCommand.valueOf(command);
+				}
 			} else {
-				result = ServerCommand.None;
+				result = ServerCommand.NONE;
 			}
+		} catch (IllegalArgumentException e) {
+			result = ServerCommand.NONE;
 		} catch (Exception e) {
 			result = ServerCommand.CONNECTION_FAILED;
 			e.printStackTrace();

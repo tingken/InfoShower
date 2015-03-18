@@ -244,8 +244,9 @@ public class WelcomActivity extends Activity {
 			// Intent intent = new Intent(WelcomActivity.this,
 			// RestartAlertActivity.class);
 			// startActivity(intent);
-			UpgradeNoticeActivity dialog = new UpgradeNoticeActivity(this, R.style.MyDialog);
-			dialog.show();
+		    // test dialog
+//			UpgradeNoticeActivity dialog = new UpgradeNoticeActivity(this, R.style.MyDialog);
+//			dialog.show();
 			break;
 		default:
 			break;

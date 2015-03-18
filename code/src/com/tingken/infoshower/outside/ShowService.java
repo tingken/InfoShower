@@ -18,7 +18,7 @@ public interface ShowService {
 
 	ServerCommand heartBeat(String loginId);
 
-	boolean uploadScreen(String authCode, Date captureTime, File capture);
+	boolean uploadScreen(String loginId, Date captureTime, File capture);
 
 	VersionInfo getLatestVersion();
 

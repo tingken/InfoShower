@@ -16,6 +16,7 @@ import com.tingken.infoshower.core.LocalServiceFactory;
 import com.tingken.infoshower.outside.ServerCommand;
 import com.tingken.infoshower.outside.ShowService;
 import com.tingken.infoshower.outside.ShowServiceFactory;
+import com.tingken.infoshower.outside.VersionInfo;
 import com.tingken.infoshower.outside.rest.HttpServiceWorker;
 import com.tingken.infoshower.util.ScreenCaptureHelper;
 import com.tingken.infoshower.util.UpgradeHelper;
@@ -47,6 +48,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
@@ -83,7 +85,7 @@ public class MainActivity extends Activity {
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
 				onKeyDown(keyCode, event);
 				int disabledKey[] = { KeyEvent.KEYCODE_TAB, KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_DPAD_DOWN,
-						KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT };
+				        KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT };
 				for (int key : disabledKey) {
 					if (key == keyCode) {
 						return true;
@@ -129,31 +131,26 @@ public class MainActivity extends Activity {
 						break;
 					case RESTART:
 						// notice restart and prepare to do
-						openRestartNotice();
-						serverListener.schedule(new TimerTask() {
-
-							@Override
-							public void run() {
-								restartApp();
-							}
-
-						}, 5000);
+						showServiceHandler.sendEmptyMessage(4);
 						break;
 					case CONNECTION_FAILED:
 						// notice connection failed and save status
 						networkAccessable = false;
 						showServiceHandler.sendEmptyMessage(2);
 						break;
+					case UPGRADE:
+						showServiceHandler.sendEmptyMessage(1);
+						break;
 					}
 					if (networkAccessable && connectionNoticeOpened) {
 						// close
-						closeConnectionNote();
+						showServiceHandler.sendEmptyMessage(3);
 					}
 				}
 
 			}, 5000, 1 * 60 * 1000);// may be call by several threads on the
-									// same time, that means need to re-start
-									// timer after execute
+			                        // same time, that means need to re-start
+			                        // timer after execute
 		}
 
 		super.onStart();
@@ -196,10 +193,15 @@ public class MainActivity extends Activity {
 					e.printStackTrace();
 				}
 				showService.uploadScreen(localService.getLoginId(), new Date(),
-						MainActivity.this.getFileStreamPath("sc.png"));
+				        MainActivity.this.getFileStreamPath("sc.png"));
 				break;
 			case 1:
-				// restart
+				// upgrade
+				VersionInfo version = showService.getLatestVersion();
+				if (upgradeHelper.isUpdate(version.getVersionCode())) {
+					showUpgradeNotice(version.getVersionName());
+					upgradeHelper.downloadApk(version.getDownloadAddress());
+				}
 				break;
 			case 2:
 				// open connection failed notice
@@ -211,12 +213,25 @@ public class MainActivity extends Activity {
 				// close connection failed notice
 				connectionFailedTime = 0;
 				closeConnectionNote();
+				break;
+			case 4:
+				// restart
+				openRestartNotice();
+				serverListener.schedule(new TimerTask() {
+
+					@Override
+					public void run() {
+						restartApp();
+					}
+
+				}, 5000);
+				break;
 			}
 			super.handleMessage(msg);
 		}
 
 	};
-	private PopupWindow restartNotice;
+	private PopupWindow popupNotice;
 
 	protected void openConnectionNote() {
 		if (!connectionNoticeOpened) {
@@ -282,7 +297,7 @@ public class MainActivity extends Activity {
 				openConnectionNote();
 				try {
 					ScreenCaptureHelper.savePic(ScreenCaptureHelper.takeScreenShot(MainActivity.this),
-							openFileOutput("sc.png", MODE_PRIVATE));
+					        openFileOutput("sc.png", MODE_PRIVATE));
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -477,7 +492,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void openRestartNotice() {
-		if (restartNotice == null) {
+		if (popupNotice == null) {
 			WindowManager windowManager = getWindowManager();
 			Display display = windowManager.getDefaultDisplay();
 			Point outSize = new Point();
@@ -485,19 +500,23 @@ public class MainActivity extends Activity {
 			// create view and PopupWindow
 			LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 			View view = inflater.inflate(R.layout.activity_restart_alert, null);
-			restartNotice = new PopupWindow(view, outSize.x, outSize.y, false);
-			restartNotice.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.CENTER, 0, 0);
+			popupNotice = new PopupWindow(view, outSize.x, outSize.y, false);
+			popupNotice.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.CENTER, 0, 0);
 		}
 	}
 
 	private void closeRestartNotice() {
-		if (restartNotice != null) {
-			restartNotice.dismiss();
-			restartNotice = null;
+		if (popupNotice != null) {
+			popupNotice.dismiss();
+			popupNotice = null;
 		}
 	}
 
 	private void openExitAlert() {
+		if (popupNotice != null) {
+			popupNotice.dismiss();
+			popupNotice = null;
+		}
 		WindowManager windowManager = getWindowManager();
 		Display display = windowManager.getDefaultDisplay();
 		Point outSize = new Point();
@@ -532,15 +551,11 @@ public class MainActivity extends Activity {
 	}
 
 	private void openServerAddressConfig() {
-		WindowManager windowManager = getWindowManager();
-		Display display = windowManager.getDefaultDisplay();
-		Point outSize = new Point();
-		display.getSize(outSize);
 		// create view and PopupWindow
 		LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 		final View view = inflater.inflate(R.layout.config_server_address, null);
 		final PopupWindow configServerAddressDialog = new PopupWindow(view, LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT, true);
+		        LayoutParams.WRAP_CONTENT, true);
 
 		Button btnConfig = (Button) view.findViewById(R.id.btn_config);
 		final EditText editServerAddress = (EditText) view.findViewById(R.id.edit_server_address);
@@ -565,6 +580,25 @@ public class MainActivity extends Activity {
 			}
 		});
 		configServerAddressDialog.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.CENTER, 0, 0);
+	}
+
+	/**
+	 * show upgrade dialog
+	 */
+	private void showUpgradeNotice(String newVersion) {
+		if (popupNotice != null) {
+			popupNotice.dismiss();
+			popupNotice = null;
+		}
+		// create view and PopupWindow
+		LayoutInflater inflater = LayoutInflater.from(this);
+		View view = inflater.inflate(R.layout.activity_upgrade_notice, null);
+		popupNotice = new PopupWindow(view, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, false);
+		TextView currentVersion = (TextView) view.findViewById(R.id.current_version_info);
+		currentVersion.setText(String.format(currentVersion.getText().toString(), UpgradeHelper.getVersionName(this)));
+		TextView newVersionAlert = (TextView) view.findViewById(R.id.alert_new_version);
+		newVersionAlert.setText(String.format(newVersionAlert.getText().toString(), newVersion));
+		popupNotice.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.CENTER, 0, 0);
 	}
 
 }

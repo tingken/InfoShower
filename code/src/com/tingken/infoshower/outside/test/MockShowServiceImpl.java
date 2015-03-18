@@ -22,7 +22,7 @@ public class MockShowServiceImpl implements ShowService {
 
 	@Override
 	public ServerCommand heartBeat(String authCode) {
-		return ServerCommand.None;
+		return ServerCommand.NONE;
 	}
 
 	@Override

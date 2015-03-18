@@ -24,6 +24,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 
@@ -59,12 +60,16 @@ public class UpgradeHelper {
 
 	/**
 	 * 检测软件更新
+	 * 
+	 * @return
 	 */
-	public void checkUpdate(int serviceCode) {
-		if (isUpdate(serviceCode)) {
+	public boolean checkUpdate(int serviceCode) {
+		boolean neadUpgrade = isUpdate(serviceCode);
+		if (neadUpgrade) {
 			// 显示提示对话框
 			showNoticeDialog();
 		}
+		return neadUpgrade;
 	}
 
 	/**
@@ -87,7 +92,7 @@ public class UpgradeHelper {
 	 * @param context
 	 * @return
 	 */
-	private int getVersionCode(Context context) {
+	public static int getVersionCode(Context context) {
 		int versionCode = 0;
 		try {
 			// 获取软件版本号，对应AndroidManifest.xml下android:versionCode
@@ -99,18 +104,31 @@ public class UpgradeHelper {
 	}
 
 	/**
+	 * 获取软件版本号
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public static String getVersionName(Context context) {
+		String versionName = null;
+		try {
+			// 获取软件版本号，对应AndroidManifest.xml下android:versionCode
+			versionName = context.getPackageManager().getPackageInfo("com.tingken.infoshower", 0).versionName;
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		return versionName;
+	}
+
+	/**
 	 * 显示软件更新对话框
 	 */
 	private void showNoticeDialog() {
 		if (restartNotice == null) {
-			WindowManager windowManager = mParentActivity.getWindowManager();
-			Display display = windowManager.getDefaultDisplay();
-			Point outSize = new Point();
-			display.getSize(outSize);
 			// create view and PopupWindow
 			LayoutInflater inflater = LayoutInflater.from(mParentActivity);
-			View view = inflater.inflate(R.layout.activity_restart_alert, null);
-			restartNotice = new PopupWindow(view, outSize.x, outSize.y, false);
+			View view = inflater.inflate(R.layout.activity_upgrade_notice, null);
+			restartNotice = new PopupWindow(view, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, false);
 			restartNotice.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.CENTER, 0, 0);
 		}
 	}
@@ -159,7 +177,7 @@ public class UpgradeHelper {
 						file.mkdir();
 					}
 					int nameIndex = downloadUrl.lastIndexOf('\\') > downloadUrl.lastIndexOf('/') ? downloadUrl
-							.lastIndexOf('\\') : downloadUrl.lastIndexOf('/');
+					        .lastIndexOf('\\') : downloadUrl.lastIndexOf('/');
 					apkFileName = downloadUrl.substring(nameIndex);
 					File apkFile = new File(mSavePath, apkFileName);
 					FileOutputStream fos = new FileOutputStream(apkFile);

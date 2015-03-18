@@ -1,54 +1,60 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center|center_horizontal"
-    android:layout_marginTop="70px"
-    android:background="@drawable/notice_bg"
-    android:orientation="vertical"
     tools:context="com.tingken.infoshower.view.RestartAlertActivity" >
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|center_horizontal"
-        android:layout_marginTop="80px"
-        android:orientation="horizontal" >
+        android:layout_marginTop="70px"
+        android:background="@drawable/notice_bg"
+        android:orientation="vertical" >
 
-        <ImageView
-            android:id="@+id/imageView1"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/restart_tag" />
+            android:layout_gravity="center|center_horizontal"
+            android:layout_marginTop="80px"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/restart_tag" />
+
+            <TextView
+                android:id="@+id/title_activity_restart_alert"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:keepScreenOn="true"
+                android:text="@string/title_activity_restart_alert"
+                android:textColor="#ffffff"
+                android:textSize="56px" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/title_activity_restart_alert"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="50px"
             android:gravity="center"
             android:keepScreenOn="true"
-            android:text="@string/title_activity_restart_alert"
+            android:text="@string/restart_alert"
             android:textColor="#ffffff"
-            android:textSize="56px" />
+            android:textSize="36px" />
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40px" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout_marginTop="50px"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:text="@string/restart_alert"
-        android:textColor="#ffffff"
-        android:textSize="36px" />
-
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="40px" />
-
-</LinearLayout>
+</FrameLayout>

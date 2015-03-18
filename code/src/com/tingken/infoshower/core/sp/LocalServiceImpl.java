@@ -102,7 +102,7 @@ public class LocalServiceImpl implements LocalService {
 
 	@Override
 	public String getShowServiceAddress() {
-		return sp.getString(SHOW_SERVER_ADDRESS, "localhost:8080/showService/");
+		return sp.getString(SHOW_SERVER_ADDRESS, null);
 	}
 
 	@Override
