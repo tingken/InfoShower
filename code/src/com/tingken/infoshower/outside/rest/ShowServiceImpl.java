@@ -33,26 +33,22 @@ public class ShowServiceImpl implements ShowService {
 	 * java.lang.String)
 	 */
 	@Override
-	public AuthResult authenticate(String authCode, String deviceId, String dimension) {
+	public AuthResult authenticate(String authCode, String deviceId, String dimension) throws Exception {
 		String url = serverAddress + "authenticate?regNum=" + authCode + "&dimension=" + dimension;
 		AuthResult result = null;
-		try {
-			HttpResponse response = restServiceWorker.getResponse(url);
-			result = new AuthResult();
-			result.setAuthSuccess(false);
-			if (response.getStatusLine().getStatusCode() == 200) {
-				HttpEntity entity = response.getEntity();
-				String out = null;
-				if (entity != null) {
-					out = EntityUtils.toString(entity, "UTF-8");
-				}
-				JSONObject jsonObject = new JSONObject(out);
-				result.setAuthSuccess(true);
-				result.setLoginId(jsonObject.getString("loginId"));
-				result.setShowPageAddress(jsonObject.getString("showPageAddress"));
+		HttpResponse response = restServiceWorker.getResponse(url);
+		result = new AuthResult();
+		result.setAuthSuccess(false);
+		if (response.getStatusLine().getStatusCode() == 200) {
+			HttpEntity entity = response.getEntity();
+			String out = null;
+			if (entity != null) {
+				out = EntityUtils.toString(entity, "UTF-8");
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			JSONObject jsonObject = new JSONObject(out);
+			result.setAuthSuccess(true);
+			result.setLoginId(jsonObject.getString("loginId"));
+			result.setShowPageAddress(jsonObject.getString("showPageAddress"));
 		}
 		return result;
 	}

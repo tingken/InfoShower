@@ -51,6 +51,8 @@ import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
+	private static final String TAG = MainActivity.class.getSimpleName();
+	private static final String APP_CACAHE_DIRNAME = "/webcache";
 
 	private WebView webContent;
 	private Timer serverListener;
@@ -95,13 +97,26 @@ public class MainActivity extends Activity {
 		});
 
 		String contentPageAddress = getIntent().getStringExtra("content_page_address");
-		webContent.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-		try {
-			HttpServiceWorker httpWorker = new HttpServiceWorker();
-			httpWorker.executeGetStream(contentPageAddress);
-		} catch (Exception e) {
-			webContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ONLY);
-		}
+//		// 开启 DOM storage API 功能
+//		webContent.getSettings().setDomStorageEnabled(true);
+//		// 开启 database storage API 功能
+//		webContent.getSettings().setDatabaseEnabled(true);
+//		String cacheDirPath = getFilesDir().getAbsolutePath() + APP_CACAHE_DIRNAME;
+//		Log.i(TAG, "cacheDirPath=" + cacheDirPath);
+//		// 设置数据库缓存路径
+//		webContent.getSettings().setDatabasePath(cacheDirPath);
+//		// 设置 Application Caches 缓存目录
+//		webContent.getSettings().setAppCachePath(cacheDirPath);
+		webContent.getSettings().setAppCacheEnabled(true);
+		webContent.getSettings().setCacheMode(getIntent().getIntExtra("web_cache_setting", WebSettings.LOAD_DEFAULT));
+//		HttpServiceWorker httpWorker = new HttpServiceWorker();
+//		try {
+//			httpWorker.executeGetStream(contentPageAddress);
+//		} catch (Exception e) {
+//			webContent.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+//		} finally {
+//			httpWorker.close();
+//		}
 		if (contentPageAddress != null) {
 			webContent.loadUrl(contentPageAddress);
 		}

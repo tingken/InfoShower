@@ -1,6 +1,7 @@
 package com.tingken.infoshower.view;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import com.tingken.infoshower.R;
 import com.tingken.infoshower.R.id;
@@ -17,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
 
 import com.tingken.infoshower.UpgradeNoticeActivity;
 import com.tingken.infoshower.core.LocalService;
@@ -190,6 +192,20 @@ public class WelcomActivity extends Activity {
 					authResult = showService.authenticate(localService.getAuthCode(),
 							SystemUtils.getDeviceId(WelcomActivity.this),
 							SystemUtils.getResolution(WelcomActivity.this));
+				} catch (IOException e) {
+					// network exception, so go to main page if has a cached
+					// page
+					Log.e(TAG, "authenticate failed with a network problem", e);
+					if (localService.getCachedServerAddress() != null) {
+						// go to main page
+						Intent intent = new Intent(WelcomActivity.this, MainActivity.class);
+						intent.putExtra("content_page_address", localService.getCachedServerAddress());
+						intent.putExtra("web_cache_setting", WebSettings.LOAD_CACHE_ONLY);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivity(intent);
+						finish();
+						return;
+					}
 				} catch (Exception e) {
 					Log.e(TAG, "authenticate failed", e);
 				}
