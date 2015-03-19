@@ -8,6 +8,8 @@ package com.tingken.infoshower.core;
  * 
  */
 public interface LocalService {
+	public static final String SET_SERVER_ADDRESS_COMMAND = "8501";
+
 	String getAuthCode();
 
 	String getCachedServerAddress();

@@ -52,8 +52,6 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-	private static final String SET_SERVER_ADDRESS_COMMAND = "8";
-
 	private WebView webContent;
 	private Timer serverListener;
 	private ShowService showService = ShowServiceFactory.getSystemShowService();
@@ -282,7 +280,7 @@ public class MainActivity extends Activity {
 			case KeyEvent.KEYCODE_TAB:
 				if (popMenu == null) {
 					if (commandBuffer.length() > 0) {
-						if (SET_SERVER_ADDRESS_COMMAND.equals(commandBuffer)) {
+						if (LocalService.SET_SERVER_ADDRESS_COMMAND.equals(commandBuffer.toString())) {
 							// open dialog to configure
 							openServerAddressConfig();
 						}
