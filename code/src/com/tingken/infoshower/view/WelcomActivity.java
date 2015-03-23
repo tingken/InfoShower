@@ -2,6 +2,8 @@ package com.tingken.infoshower.view;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.tingken.infoshower.R;
 import com.tingken.infoshower.R.id;
@@ -162,7 +164,7 @@ public class WelcomActivity extends Activity {
 		// Trigger the initial hide() shortly after the activity has been
 		// created, to briefly hint to the user that UI controls
 		// are available.
-		delayedHide(10 * 1000);
+		delayedHide(1000);
 	}
 
 	/**
@@ -180,8 +182,8 @@ public class WelcomActivity extends Activity {
 		}
 	};
 
-	Handler mHideHandler = new Handler();
-	Runnable mHideRunnable = new Runnable() {
+	Timer mLoginTimer;
+	TimerTask mLoginTask = new TimerTask() {
 		@Override
 		public void run() {
 			// check login status
@@ -211,6 +213,7 @@ public class WelcomActivity extends Activity {
 				}
 				if (authResult != null && authResult.isAuthSuccess()) {
 					localService.saveLoginId(authResult.getLoginId());
+					localService.saveCachedServerAddress(authResult.getShowPageAddress());
 					// go to main page
 					Intent intent = new Intent(WelcomActivity.this, MainActivity.class);
 					intent.putExtra("content_page_address", authResult.getShowPageAddress());
@@ -238,12 +241,15 @@ public class WelcomActivity extends Activity {
 	};
 
 	/**
-	 * Schedules a call to hide() in [delay] milliseconds, canceling any
+	 * Schedules a call to mLoginTask in [delay] milliseconds, canceling any
 	 * previously scheduled calls.
 	 */
 	private void delayedHide(int delayMillis) {
-		mHideHandler.removeCallbacks(mHideRunnable);
-		mHideHandler.postDelayed(mHideRunnable, delayMillis);
+		if (mLoginTimer != null) {
+			mLoginTimer.cancel();
+		}
+		mLoginTimer = new Timer();
+		mLoginTimer.schedule(mLoginTask, delayMillis);
 	}
 
 	@Override
