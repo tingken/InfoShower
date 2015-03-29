@@ -19,6 +19,7 @@ import android.widget.PopupWindow;
 import com.tingken.infoshower.R;
 import com.tingken.infoshower.core.LocalService;
 import com.tingken.infoshower.core.LocalServiceFactory;
+import com.tingken.infoshower.outside.ShowService;
 import com.tingken.infoshower.util.ScreenCaptureHelper;
 
 public class LoginInvalidActivity extends Activity {
@@ -98,7 +99,8 @@ public class LoginInvalidActivity extends Activity {
 
 		Button btnConfig = (Button) view.findViewById(R.id.btn_config);
 		final EditText editServerAddress = (EditText) view.findViewById(R.id.edit_server_address);
-		editServerAddress.setText(localService.getShowServiceAddress());
+		String serviceAddress = localService.getShowServiceAddress();
+		editServerAddress.setText(serviceAddress != null ? serviceAddress : ShowService.DEFAULT_SERVER_ADDRESS);
 		btnConfig.setOnClickListener(new View.OnClickListener() {
 
 			@Override

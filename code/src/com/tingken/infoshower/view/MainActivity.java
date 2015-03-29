@@ -572,7 +572,8 @@ public class MainActivity extends Activity {
 
 		Button btnConfig = (Button) view.findViewById(R.id.btn_config);
 		final EditText editServerAddress = (EditText) view.findViewById(R.id.edit_server_address);
-		editServerAddress.setText(localService.getShowServiceAddress());
+		String serviceAddress = localService.getShowServiceAddress();
+		editServerAddress.setText(serviceAddress != null ? serviceAddress : ShowService.DEFAULT_SERVER_ADDRESS);
 		btnConfig.setOnClickListener(new View.OnClickListener() {
 
 			@Override
