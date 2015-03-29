@@ -300,6 +300,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 				} else {
 					// go to Login Fail Page
 					loginHandler.sendEmptyMessage(1);
+					return false;
 				}
 			}
 
