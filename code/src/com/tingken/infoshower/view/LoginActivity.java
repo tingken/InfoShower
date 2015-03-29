@@ -184,7 +184,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
 	private boolean isPasswordValid(String password) {
 		// TODO: Replace this with your own logic
-		return password.length() > 4;
+		return password.length() > 2;
 	}
 
 	/**
@@ -304,13 +304,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 				}
 			}
 
-			for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mAuthCode)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(mAuthCode);
-				}
-			}
+			// for (String credential : DUMMY_CREDENTIALS) {
+			// String[] pieces = credential.split(":");
+			// if (pieces[0].equals(mAuthCode)) {
+			// // Account exists, return true if the password matches.
+			// return pieces[1].equals(mAuthCode);
+			// }
+			// }
 
 			// TODO: register the new account here.
 			return true;
@@ -324,8 +324,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 			if (success) {
 				finish();
 			} else {
-				mAuthcodeView.setError(getString(R.string.error_incorrect_password));
-				mAuthcodeView.requestFocus();
+				// mAuthcodeView.setError(getString(R.string.error_incorrect_password));
+				// mAuthcodeView.requestFocus();
 			}
 		}
 
