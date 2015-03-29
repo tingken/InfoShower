@@ -11,6 +11,7 @@ import java.util.Date;
  * 
  */
 public interface ShowService {
+	public static final String DEFAULT_SERVER_ADDRESS = "http://125.71.200.138:10001/ii/";
 
 	void init(String basicUrl);
 
@@ -20,6 +21,6 @@ public interface ShowService {
 
 	boolean uploadScreen(String loginId, Date captureTime, File capture);
 
-	VersionInfo getLatestVersion();
+	VersionInfo getLatestVersion(String loginId);
 
 }

@@ -37,7 +37,7 @@ public class MockShowServiceImpl implements ShowService {
 	}
 
 	@Override
-	public VersionInfo getLatestVersion() {
+	public VersionInfo getLatestVersion(String loginId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

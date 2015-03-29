@@ -15,6 +15,7 @@ import com.tingken.infoshower.outside.AuthResult;
 import com.tingken.infoshower.outside.ServerCommand;
 import com.tingken.infoshower.outside.ShowService;
 import com.tingken.infoshower.outside.VersionInfo;
+import com.tingken.infoshower.util.UploadUtils;
 
 /**
  * @author tingken.com
@@ -22,7 +23,7 @@ import com.tingken.infoshower.outside.VersionInfo;
  */
 public class ShowServiceImpl implements ShowService {
 
-	private static String serverAddress = "http://192.168.2.8:8080/showService-war-1.0/showService/";
+	private static String serverAddress = DEFAULT_SERVER_ADDRESS;
 	private HttpServiceWorker restServiceWorker = new HttpServiceWorker();
 
 	/*
@@ -34,7 +35,8 @@ public class ShowServiceImpl implements ShowService {
 	 */
 	@Override
 	public AuthResult authenticate(String authCode, String deviceId, String dimension) throws Exception {
-		String url = serverAddress + "authenticate?regNum=" + authCode + "&dimension=" + dimension;
+		String url = serverAddress + "VideoDisplay.svc/DeviceWeb/Authenticate?regNum=" + authCode + "&dimension="
+		        + dimension;
 		AuthResult result = null;
 		HttpResponse response = restServiceWorker.getResponse(url);
 		result = new AuthResult();
@@ -61,7 +63,7 @@ public class ShowServiceImpl implements ShowService {
 	 */
 	@Override
 	public ServerCommand heartBeat(String loginId) {
-		String url = serverAddress + "heartBeat?loginId=" + loginId;
+		String url = serverAddress + "VideoDisplay.svc/DeviceWeb/Login/" + loginId;
 		ServerCommand result = null;
 		try {
 			HttpResponse response = restServiceWorker.getResponse(url);
@@ -99,8 +101,9 @@ public class ShowServiceImpl implements ShowService {
 	 */
 	@Override
 	public boolean uploadScreen(String loginId, Date captureTime, File capture) {
-		String url = serverAddress + "uploadCapture?loginId=" + loginId;
-		return restServiceWorker.postImage(capture, url);
+		String url = serverAddress + "IPrintScreen.aspx?loginId=" + loginId;
+		// return restServiceWorker.postImage(capture, url);
+		return UploadUtils.uploadFile(capture, url);
 	}
 
 	@Override
@@ -109,8 +112,8 @@ public class ShowServiceImpl implements ShowService {
 	}
 
 	@Override
-	public VersionInfo getLatestVersion() {
-		String url = serverAddress + "latestVersion";
+	public VersionInfo getLatestVersion(String loginId) {
+		String url = serverAddress + "VideoDisplay.svc/DeviceWeb/latestVersion/" + loginId;
 		VersionInfo result = null;
 		try {
 			String responseEntity = restServiceWorker.executeGet(url);

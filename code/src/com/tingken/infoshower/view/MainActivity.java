@@ -210,7 +210,7 @@ public class MainActivity extends Activity {
 				break;
 			case 1:
 				// upgrade
-				VersionInfo version = showService.getLatestVersion();
+				VersionInfo version = showService.getLatestVersion(localService.getLoginId());
 				if (upgradeHelper.isUpdate(version.getVersionCode())) {
 					showUpgradeNotice(version.getVersionName());
 					upgradeHelper.downloadApk(version.getDownloadAddress());
