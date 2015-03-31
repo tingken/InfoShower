@@ -209,7 +209,7 @@ public class UpgradeHelper {
 				e.printStackTrace();
 			}
 			// 取消下载对话框显示
-			restartNotice.dismiss();
+			// restartNotice.dismiss();
 		}
 	};
 
@@ -225,5 +225,6 @@ public class UpgradeHelper {
 		Intent i = new Intent(Intent.ACTION_VIEW);
 		i.setDataAndType(Uri.parse("file://" + apkfile.toString()), "application/vnd.android.package-archive");
 		mParentActivity.startActivity(i);
+		mParentActivity.finish();
 	}
 }
