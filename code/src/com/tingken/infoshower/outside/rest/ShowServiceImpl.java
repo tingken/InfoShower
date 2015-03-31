@@ -5,6 +5,7 @@ package com.tingken.infoshower.outside.rest;
 
 import java.io.File;
 import java.util.Date;
+import java.util.TreeMap;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,6 +23,13 @@ import com.tingken.infoshower.util.UploadUtils;
  * 
  */
 public class ShowServiceImpl implements ShowService {
+
+	private static TreeMap<String, ServerCommand> commandIndex = new TreeMap<String, ServerCommand>();
+	static {
+		for (ServerCommand command : ServerCommand.values()) {
+			commandIndex.put(command.toString(), command);
+		}
+	}
 
 	private static String serverAddress = DEFAULT_SERVER_ADDRESS;
 	private HttpServiceWorker restServiceWorker = new HttpServiceWorker();
@@ -68,17 +76,16 @@ public class ShowServiceImpl implements ShowService {
 		try {
 			HttpResponse response = restServiceWorker.getResponse(url);
 			if (response.getStatusLine().getStatusCode() == 200) {
+				result = ServerCommand.NONE;
 				HttpEntity entity = response.getEntity();
 				String out = null;
 				if (entity != null) {
 					out = EntityUtils.toString(entity, "UTF-8");
 				}
 				JSONObject jsonObject = new JSONObject(out);
-				String command = jsonObject.getString("command");
-				if ("null".equals(command)) {
-					result = ServerCommand.NONE;
-				} else {
-					result = ServerCommand.valueOf(command);
+				ServerCommand command = commandIndex.get(jsonObject.getString("command"));
+				if (command != null) {
+					result = command;
 				}
 			} else {
 				result = ServerCommand.NONE;
