@@ -609,9 +609,10 @@ public class MainActivity extends Activity {
 		View view = inflater.inflate(R.layout.activity_upgrade_notice, null);
 		popupNotice = new PopupWindow(view, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, false);
 		TextView currentVersion = (TextView) view.findViewById(R.id.current_version_info);
-		currentVersion.setText(String.format(currentVersion.getText().toString(), UpgradeHelper.getVersionName(this)));
+		currentVersion.setText(String.format(getResources().getString(R.string.current_version_info),
+		        UpgradeHelper.getVersionName(this)));
 		TextView newVersionAlert = (TextView) view.findViewById(R.id.alert_new_version);
-		newVersionAlert.setText(String.format(newVersionAlert.getText().toString(), newVersion));
+		newVersionAlert.setText(String.format(getResources().getString(R.string.alert_new_version), newVersion));
 		popupNotice.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.CENTER, 0, 0);
 	}
 
