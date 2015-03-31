@@ -31,7 +31,7 @@
     <string name="title_exit_alert">确认退出</string>
     <string name="exit_app_alert">你是否确认退出信息显示系统？</string>
     <string name="title_upgrade">版本更新！</string>
-    <string name="network_disconnect_alert">网络异常，已与服务器连接断开，请检查网络，重试连接（%1）</string>
+    <string name="network_disconnect_alert">网络异常，已与服务器连接断开，请检查网络，重试连接（%1$s）</string>
     <string name="title_config_server_address">服务器地址设置</string>
     <string name="prompt_input_server_address">请输入新地址</string>
     <string name="prompt_server_address">服务器地址</string>

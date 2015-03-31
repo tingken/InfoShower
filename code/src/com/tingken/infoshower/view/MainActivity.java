@@ -122,6 +122,55 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	private class HeartBeatTask extends TimerTask {
+
+		@Override
+		public void run() {
+			// Get Server Command
+			// If connection failed, popup connection notice
+			ServerCommand command = showService.heartBeat(localService.getLoginId());
+			boolean networkAccessable = true;
+			switch (command) {
+			case SCREEN_CAPTURE:
+				// capture
+				showServiceHandler.sendEmptyMessage(0);
+				if (serverListener != null) {
+					serverListener.schedule(new HeartBeatTask(), 60000);
+				}
+				break;
+			case RESTART:
+				// notice restart and prepare to do
+				showServiceHandler.sendEmptyMessage(4);
+				break;
+			case CONNECTION_FAILED:
+				// notice connection failed and save status
+				networkAccessable = false;
+				showServiceHandler.sendEmptyMessage(2);
+				// serverListener.schedule(new HeartBeatTask(), 60000);
+				break;
+			case UPGRADE:
+				VersionInfo version = showService.getLatestVersion(localService.getLoginId());
+				if (version != null && upgradeHelper.isUpdate(version.getVersionCode())) {
+					Message upgradeMsg = new Message();
+					upgradeMsg.what = 1;
+					upgradeMsg.obj = version;
+					showServiceHandler.sendMessage(upgradeMsg);
+				}
+				break;
+			default:
+				if (serverListener != null) {
+					serverListener.schedule(new HeartBeatTask(), 60000);
+				}
+				break;
+			}
+			if (networkAccessable && connectionNoticeOpened) {
+				// close
+				showServiceHandler.sendEmptyMessage(3);
+			}
+		}
+
+	};
+
 	@Override
 	protected void onStart() {
 		// start timer to monitor server commands
@@ -129,41 +178,11 @@ public class MainActivity extends Activity {
 			// Log.e(TAG, "定时更新数据");
 			serverListener = new Timer(true);
 			// 每隔一段时间更新UI
-			serverListener.schedule(new TimerTask() {
-
-				@Override
-				public void run() {
-					// Get Server Command
-					// If connection failed, popup connection notice
-					ServerCommand command = showService.heartBeat(localService.getLoginId());
-					boolean networkAccessable = true;
-					switch (command) {
-					case SCREEN_CAPTURE:
-						// capture
-						showServiceHandler.sendEmptyMessage(0);
-						break;
-					case RESTART:
-						// notice restart and prepare to do
-						showServiceHandler.sendEmptyMessage(4);
-						break;
-					case CONNECTION_FAILED:
-						// notice connection failed and save status
-						networkAccessable = false;
-						showServiceHandler.sendEmptyMessage(2);
-						break;
-					case UPGRADE:
-						showServiceHandler.sendEmptyMessage(1);
-						break;
-					}
-					if (networkAccessable && connectionNoticeOpened) {
-						// close
-						showServiceHandler.sendEmptyMessage(3);
-					}
-				}
-
-			}, 5000, 1 * 60 * 1000);// may be call by several threads on the
-			                        // same time, that means need to re-start
-			                        // timer after execute
+			// serverListener.schedule(heartBeatTask, 5000, 1 * 60 * 1000);
+			// if schedule with a period, may be call by several threads on the
+			// same time, that means need to re-start
+			// timer after execute
+			serverListener.schedule(new HeartBeatTask(), 5000);
 		}
 
 		super.onStart();
@@ -205,13 +224,22 @@ public class MainActivity extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				showService.uploadScreen(localService.getLoginId(), new Date(),
-				        MainActivity.this.getFileStreamPath("sc.png"));
+				if (serverListener != null) {
+					serverListener.schedule(new TimerTask() {
+
+						@Override
+						public void run() {
+							showService.uploadScreen(localService.getLoginId(), new Date(),
+							        MainActivity.this.getFileStreamPath("sc.png"));
+						}
+
+					}, 0);
+				}
 				break;
 			case 1:
 				// upgrade
-				VersionInfo version = showService.getLatestVersion(localService.getLoginId());
-				if (upgradeHelper.isUpdate(version.getVersionCode())) {
+				VersionInfo version = (VersionInfo) msg.obj;
+				if (version != null) {
 					showUpgradeNotice(version.getVersionName());
 					upgradeHelper.downloadApk(version.getDownloadAddress());
 				}
@@ -230,14 +258,16 @@ public class MainActivity extends Activity {
 			case 4:
 				// restart
 				openRestartNotice();
-				serverListener.schedule(new TimerTask() {
+				if (serverListener != null) {
+					serverListener.schedule(new TimerTask() {
 
-					@Override
-					public void run() {
-						restartApp();
-					}
+						@Override
+						public void run() {
+							restartApp();
+						}
 
-				}, 5000);
+					}, 5000);
+				}
 				break;
 			}
 			super.handleMessage(msg);
@@ -245,6 +275,23 @@ public class MainActivity extends Activity {
 
 	};
 	private PopupWindow popupNotice;
+	private TextView networkDisconnectAlertText;
+	private Handler changeNetworkAlertTextHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			if (msg.what < 1) {
+				closeConnectionNote();
+				if (serverListener != null) {
+					serverListener.schedule(new HeartBeatTask(), 60000);
+				}
+			} else {
+				networkDisconnectAlertText.setText(String.format(
+				        getResources().getString(R.string.network_disconnect_alert), msg.what));
+			}
+			super.handleMessage(msg);
+		}
+	};
 
 	protected void openConnectionNote() {
 		if (!connectionNoticeOpened) {
@@ -254,8 +301,26 @@ public class MainActivity extends Activity {
 			display.getSize(outSize);
 			LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 			// 引入窗口配置文件
-			View view = inflater.inflate(R.layout.connection_failed_note, null);
+			View view = inflater.inflate(R.layout.connection_failed_notice, null);
 			connectionFailedNotice = new PopupWindow(view, outSize.x, outSize.y, false);
+			networkDisconnectAlertText = (TextView) view.findViewById(R.id.network_disconnect_alert);
+			final int originalSecondToConnect = 10;
+			networkDisconnectAlertText.setText(String.format(getResources()
+			        .getString(R.string.network_disconnect_alert),
+			        originalSecondToConnect));
+			if (serverListener != null) {
+				serverListener.schedule(new TimerTask() {
+					int iSecondToConnect = originalSecondToConnect;
+
+					@Override
+					public void run() {
+						changeNetworkAlertTextHandler.sendEmptyMessage(--iSecondToConnect);
+						if (iSecondToConnect < 1) {
+							cancel();
+						}
+					}
+				}, 1000, 1000);
+			}
 			connectionFailedNotice.showAtLocation(inflater.inflate(R.layout.activity_main, null), Gravity.BOTTOM, 0, 0);
 
 			connectionNoticeOpened = true;
