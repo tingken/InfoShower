@@ -151,7 +151,7 @@ public class UpgradeHelper {
 		String downloadUrl;
 
 		public downloadApkThread(String url) {
-			downloadUrl = url;
+			downloadUrl = url.trim();
 		}
 
 		@Override
