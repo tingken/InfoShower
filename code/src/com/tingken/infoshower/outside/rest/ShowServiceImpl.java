@@ -4,6 +4,8 @@
 package com.tingken.infoshower.outside.rest;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.TreeMap;
 
@@ -43,8 +45,8 @@ public class ShowServiceImpl implements ShowService {
 	 */
 	@Override
 	public AuthResult authenticate(String authCode, String deviceId, String dimension) throws Exception {
-		String url = serverAddress + "VideoDisplay.svc/DeviceWeb/Authenticate?regNum=" + authCode + "&dimension="
-		        + dimension;
+		String url = serverAddress + "VideoDisplay.svc/DeviceWeb/Authenticate?regNum="
+		        + URLEncoder.encode(authCode, "utf-8") + "&dimension=" + URLEncoder.encode(dimension, "utf-8");
 		AuthResult result = null;
 		HttpResponse response = restServiceWorker.getResponse(url);
 		result = new AuthResult();
@@ -71,7 +73,12 @@ public class ShowServiceImpl implements ShowService {
 	 */
 	@Override
 	public ServerCommand heartBeat(String loginId) {
-		String url = serverAddress + "VideoDisplay.svc/DeviceWeb/Login/" + loginId;
+		String url;
+		try {
+			url = serverAddress + "VideoDisplay.svc/DeviceWeb/Login/" + URLEncoder.encode(loginId, "utf-8");
+		} catch (UnsupportedEncodingException e1) {
+			return ServerCommand.NONE;
+		}
 		ServerCommand result = null;
 		try {
 			HttpResponse response = restServiceWorker.getResponse(url);
@@ -108,7 +115,12 @@ public class ShowServiceImpl implements ShowService {
 	 */
 	@Override
 	public boolean uploadScreen(String loginId, Date captureTime, File capture) {
-		String url = serverAddress + "IPrintScreen.aspx?loginId=" + loginId;
+		String url;
+		try {
+			url = serverAddress + "IPrintScreen.aspx?loginId=" + URLEncoder.encode(loginId, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			return false;
+		}
 		// return restServiceWorker.postImage(capture, url);
 		return UploadUtils.uploadFile(capture, url);
 	}
@@ -120,7 +132,12 @@ public class ShowServiceImpl implements ShowService {
 
 	@Override
 	public VersionInfo getLatestVersion(String loginId) {
-		String url = serverAddress + "VideoDisplay.svc/DeviceWeb/latestVersion/" + loginId;
+		String url;
+		try {
+			url = serverAddress + "VideoDisplay.svc/DeviceWeb/latestVersion/" + URLEncoder.encode(loginId, "utf-8");
+		} catch (UnsupportedEncodingException e1) {
+			return null;
+		}
 		VersionInfo result = null;
 		try {
 			String responseEntity = restServiceWorker.executeGet(url);
